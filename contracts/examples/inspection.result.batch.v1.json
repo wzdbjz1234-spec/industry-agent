@@ -1,0 +1,283 @@
+{
+  "schema_version": "1.0",
+  "batch_message_id": "ib-normal-0001",
+  "producer_id": "replay-normal",
+  "produced_at": "2026-08-22T02:00:45Z",
+  "records": [
+    {
+      "result_id": "ir-normal-00-00",
+      "inspected_at": "2026-08-22T02:00:00Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-00",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.25106822935617124,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-01",
+      "inspected_at": "2026-08-22T02:00:05Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-01",
+      "batch_id": "batch-normal-00",
+      "is_ng": true,
+      "anomaly_score": 0.78,
+      "threshold": 0.5,
+      "defect_type": "surface_anomaly",
+      "defect_region": {
+        "x_normalized": 0.24,
+        "y_normalized": 0.24,
+        "area_ratio": 0.08,
+        "region_label": "upper_left"
+      },
+      "image_uri": "s3://inspection/simulated/normal/ir-normal-00-01.png",
+      "anomaly_map_uri": "s3://inspection/simulated/normal/ir-normal-00-01-map.png",
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-02",
+      "inspected_at": "2026-08-22T02:00:10Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-02",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.3437467313657584,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-03",
+      "inspected_at": "2026-08-22T02:00:15Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-03",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.25805622305922943,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-04",
+      "inspected_at": "2026-08-22T02:00:20Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-04",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.2791885056824494,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-05",
+      "inspected_at": "2026-08-22T02:00:25Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-05",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.35054094612734776,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-06",
+      "inspected_at": "2026-08-22T02:00:30Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-06",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.28387853075114977,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-07",
+      "inspected_at": "2026-08-22T02:00:35Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-07",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.18838488251119612,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-08",
+      "inspected_at": "2026-08-22T02:00:40Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-08",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.2554450278428637,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    },
+    {
+      "result_id": "ir-normal-00-09",
+      "inspected_at": "2026-08-22T02:00:45Z",
+      "factory_id": "factory-01",
+      "line_id": "line-01",
+      "station_id": "camera-01",
+      "product_id": "part-A",
+      "unit_id": "unit-normal-00-09",
+      "batch_id": "batch-normal-00",
+      "is_ng": false,
+      "anomaly_score": 0.2808463098623063,
+      "threshold": 0.5,
+      "defect_type": null,
+      "defect_region": null,
+      "image_uri": null,
+      "anomaly_map_uri": null,
+      "detector": {
+        "type": "efficientad-compatible",
+        "model_version": "sim-detector-1.0",
+        "adapter_version": "replay-1.0"
+      },
+      "metadata": {
+        "simulated": true,
+        "scenario": "normal",
+        "seed": 7
+      }
+    }
+  ]
+}

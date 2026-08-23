@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "event_id": "prop-ar-demo-001:proposed",
+  "event_type": "quality.investigation.proposed.v1",
+  "occurred_at": "2026-08-22T02:03:10Z",
+  "analysis_run_id": "ar-demo-001",
+  "case_id": "qc-demo-001",
+  "proposal": {
+    "schema_version": "1.0",
+    "proposal_id": "prop-ar-demo-001",
+    "version": 1,
+    "case_id": "qc-demo-001",
+    "analysis_run_id": "ar-demo-001",
+    "created_at": "2026-08-22T02:02:00Z",
+    "title": "检查夹具定位状态",
+    "reason": "当前Snapshot与适用技术手册支持优先检查定位销。",
+    "steps": [
+      {
+        "order": 1,
+        "instruction": "测量定位销间隙",
+        "expected_evidence": "定位销间隙测量值"
+      }
+    ],
+    "requested_role": "QUALITY_ENGINEER",
+    "priority": "HIGH",
+    "risk_level": "LOW",
+    "evidence_ids": ["EV-A-001", "EV-B-001"],
+    "status": "PENDING_APPROVAL"
+  }
+}

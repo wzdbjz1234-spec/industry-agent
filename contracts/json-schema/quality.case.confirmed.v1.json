@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "quality.case.confirmed.v1",
+      "default": "quality.case.confirmed.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "confirmation_id": {
+      "title": "Confirmation Id",
+      "type": "string"
+    },
+    "verification_status": {
+      "enum": [
+        "VERIFIED_EFFECTIVE",
+        "NOT_VERIFIED",
+        "INCONCLUSIVE"
+      ],
+      "title": "Verification Status",
+      "type": "string"
+    },
+    "knowledge_promotion_eligible": {
+      "title": "Knowledge Promotion Eligible",
+      "type": "boolean"
+    },
+    "confirmed_by": {
+      "title": "Confirmed By",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "case_id",
+    "confirmation_id",
+    "verification_status",
+    "knowledge_promotion_eligible",
+    "confirmed_by"
+  ],
+  "title": "CaseConfirmedEventContract",
+  "type": "object"
+}

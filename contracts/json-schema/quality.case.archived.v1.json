@@ -1,0 +1,68 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "quality.case.archived.v1",
+      "default": "quality.case.archived.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "archive_uri": {
+      "title": "Archive Uri",
+      "type": "string"
+    },
+    "knowledge_index_status": {
+      "enum": [
+        "INDEXED",
+        "NOT_ELIGIBLE"
+      ],
+      "title": "Knowledge Index Status",
+      "type": "string"
+    },
+    "knowledge_document_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Knowledge Document Id"
+    },
+    "content_hash": {
+      "title": "Content Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "case_id",
+    "archive_uri",
+    "knowledge_index_status",
+    "content_hash"
+  ],
+  "title": "CaseArchivedEventContract",
+  "type": "object"
+}

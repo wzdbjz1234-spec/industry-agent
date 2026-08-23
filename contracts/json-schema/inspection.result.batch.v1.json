@@ -1,0 +1,275 @@
+{
+  "$defs": {
+    "DefectRegionContract": {
+      "additionalProperties": false,
+      "description": "Normalized location of a detected defect.",
+      "properties": {
+        "x_normalized": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X Normalized",
+          "type": "number"
+        },
+        "y_normalized": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y Normalized",
+          "type": "number"
+        },
+        "area_ratio": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Area Ratio",
+          "type": "number"
+        },
+        "region_label": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Region Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "x_normalized",
+        "y_normalized",
+        "area_ratio",
+        "region_label"
+      ],
+      "title": "DefectRegionContract",
+      "type": "object"
+    },
+    "DetectorContract": {
+      "additionalProperties": false,
+      "description": "Detector provenance carried with each result.",
+      "properties": {
+        "type": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        },
+        "model_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Model Version",
+          "type": "string"
+        },
+        "adapter_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Adapter Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "model_version",
+        "adapter_version"
+      ],
+      "title": "DetectorContract",
+      "type": "object"
+    },
+    "InspectionResultContract": {
+      "additionalProperties": false,
+      "description": "One inspection result in ``inspection.result.batch.v1``.",
+      "properties": {
+        "result_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Result Id",
+          "type": "string"
+        },
+        "inspected_at": {
+          "format": "date-time",
+          "title": "Inspected At",
+          "type": "string"
+        },
+        "factory_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Factory Id",
+          "type": "string"
+        },
+        "line_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Line Id",
+          "type": "string"
+        },
+        "station_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Station Id",
+          "type": "string"
+        },
+        "product_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Product Id",
+          "type": "string"
+        },
+        "unit_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Unit Id",
+          "type": "string"
+        },
+        "batch_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Batch Id",
+          "type": "string"
+        },
+        "is_ng": {
+          "title": "Is Ng",
+          "type": "boolean"
+        },
+        "anomaly_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Anomaly Score",
+          "type": "number"
+        },
+        "threshold": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "defect_type": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defect Type"
+        },
+        "defect_region": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DefectRegionContract"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "image_uri": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Uri"
+        },
+        "anomaly_map_uri": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Anomaly Map Uri"
+        },
+        "detector": {
+          "$ref": "#/$defs/DetectorContract"
+        },
+        "metadata": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Metadata",
+          "type": "object"
+        }
+      },
+      "required": [
+        "result_id",
+        "inspected_at",
+        "factory_id",
+        "line_id",
+        "station_id",
+        "product_id",
+        "unit_id",
+        "batch_id",
+        "is_ng",
+        "anomaly_score",
+        "threshold",
+        "detector"
+      ],
+      "title": "InspectionResultContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Versioned batch accepted from a detector or replay adapter.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "batch_message_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Batch Message Id",
+      "type": "string"
+    },
+    "producer_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Producer Id",
+      "type": "string"
+    },
+    "produced_at": {
+      "format": "date-time",
+      "title": "Produced At",
+      "type": "string"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/InspectionResultContract"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Records",
+      "type": "array"
+    }
+  },
+  "required": [
+    "batch_message_id",
+    "producer_id",
+    "produced_at",
+    "records"
+  ],
+  "title": "InspectionResultBatchContract",
+  "type": "object"
+}

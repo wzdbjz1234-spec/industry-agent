@@ -1,0 +1,118 @@
+{
+  "additionalProperties": false,
+  "description": "A detected NG frame or a visual processing failure.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "quality.vision.fault.v1",
+      "default": "quality.vision.fault.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "trace_id": {
+      "title": "Trace Id",
+      "type": "string"
+    },
+    "frame_id": {
+      "title": "Frame Id",
+      "type": "string"
+    },
+    "scope": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Scope",
+      "type": "object"
+    },
+    "fault_kind": {
+      "enum": [
+        "NG_DETECTION",
+        "PROCESSING_FAILURE"
+      ],
+      "title": "Fault Kind",
+      "type": "string"
+    },
+    "detector_type": {
+      "title": "Detector Type",
+      "type": "string"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "anomaly_score": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Anomaly Score"
+    },
+    "threshold": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Threshold"
+    },
+    "details": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Details",
+      "type": "object"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "trace_id",
+    "frame_id",
+    "scope",
+    "fault_kind",
+    "detector_type",
+    "model_version"
+  ],
+  "title": "VisionFaultEventContract",
+  "type": "object"
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "config_id": "baseline",
+  "model": "deterministic-investigation-1",
+  "prompt_version": "prompt-v1",
+  "tool_version": "readonly-tools-v2",
+  "max_iterations": 8
+}

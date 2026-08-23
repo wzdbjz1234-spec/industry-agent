@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Task Id",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "proposal_id": {
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "external_system": {
+      "const": "MOCK_QMS",
+      "default": "MOCK_QMS",
+      "title": "External System",
+      "type": "string"
+    },
+    "status": {
+      "default": "OPEN",
+      "enum": [
+        "OPEN",
+        "IN_PROGRESS",
+        "CLOSED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "assignee_role": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Assignee Role",
+      "type": "string"
+    },
+    "created_by": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Created By",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "task_uri": {
+      "title": "Task Uri",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "case_id",
+    "proposal_id",
+    "assignee_role",
+    "created_by",
+    "created_at",
+    "task_uri"
+  ],
+  "title": "QmsTaskContract",
+  "type": "object"
+}

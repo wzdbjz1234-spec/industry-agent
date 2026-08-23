@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "event_id": "evt-qms-task-created:QMS-TASK-0001",
+  "event_type": "qms.task.created.v1",
+  "occurred_at": "2026-08-23T10:00:02Z",
+  "task": {
+    "task_id": "QMS-TASK-0001",
+    "case_id": "case-fixture-offset-001",
+    "proposal_id": "prop-fixture-offset-001",
+    "external_system": "MOCK_QMS",
+    "status": "OPEN",
+    "assignee_role": "QUALITY_ENGINEER",
+    "created_by": "quality-integration-service",
+    "created_at": "2026-08-23T10:00:02Z",
+    "task_uri": "http://localhost:8001/tasks/QMS-TASK-0001"
+  }
+}

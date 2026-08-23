@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "event_id": "vision-fault-0001",
+  "event_type": "quality.vision.fault.v1",
+  "occurred_at": "2026-08-23T10:00:01Z",
+  "trace_id": "trace-0001",
+  "frame_id": "frame-0001",
+  "scope": {
+    "factory_id": "factory-01",
+    "station_id": "camera-01"
+  },
+  "fault_kind": "NG_DETECTION",
+  "detector_type": "efficientad",
+  "model_version": "provided-30-111",
+  "anomaly_score": 0.87,
+  "threshold": 0.2,
+  "details": {
+    "defect_type": "surface_defect"
+  }
+}

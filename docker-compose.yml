@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      QUALITY_LLM_PROVIDER: ${QUALITY_LLM_PROVIDER:-deterministic}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      QUALITY_LLM_BASE_URL: ${QUALITY_LLM_BASE_URL:-https://api.deepseek.com}
+      QUALITY_LLM_MODEL: ${QUALITY_LLM_MODEL:-deepseek-v4-flash}
+      QUALITY_LLM_TIMEOUT_S: ${QUALITY_LLM_TIMEOUT_S:-30}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      api:
+        condition: service_healthy

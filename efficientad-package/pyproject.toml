@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "efficientad"
+version = "0.1.0"
+description = "EfficientAD industrial defect detection toolchain (refactored packages)"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "torch",
+    "torchvision",
+    "opencv-python",
+    "pillow",
+    "tqdm",
+    "tifffile",
+    "matplotlib",
+    "scikit-learn",
+]
+
+[project.scripts]
+efficientad-ui = "efficientad.application.ui.app:main"
+efficientad-train = "efficientad.training.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+efficientad = ["resources/*.pth"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,112 @@
+{
+  "additionalProperties": false,
+  "description": "A statistically simple rolling-window NG rate fluctuation event.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "quality.vision.ng-rate-fluctuation.v1",
+      "default": "quality.vision.ng-rate-fluctuation.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "trace_id": {
+      "title": "Trace Id",
+      "type": "string"
+    },
+    "scope": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Scope",
+      "type": "object"
+    },
+    "window_start": {
+      "format": "date-time",
+      "title": "Window Start",
+      "type": "string"
+    },
+    "window_end": {
+      "format": "date-time",
+      "title": "Window End",
+      "type": "string"
+    },
+    "sample_count": {
+      "minimum": 1,
+      "title": "Sample Count",
+      "type": "integer"
+    },
+    "baseline_ng_rate": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Baseline Ng Rate",
+      "type": "number"
+    },
+    "recent_ng_rate": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Recent Ng Rate",
+      "type": "number"
+    },
+    "delta": {
+      "title": "Delta",
+      "type": "number"
+    },
+    "direction": {
+      "enum": [
+        "RISING",
+        "FALLING"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "details": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Details",
+      "type": "object"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "trace_id",
+    "scope",
+    "window_start",
+    "window_end",
+    "sample_count",
+    "baseline_ng_rate",
+    "recent_ng_rate",
+    "delta",
+    "direction"
+  ],
+  "title": "NgRateFluctuationEventContract",
+  "type": "object"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "job_id": "vision-job-0001",
+  "frame_id": "frame-0001",
+  "scheme": "efficientad",
+  "status": "COMPLETED",
+  "submitted_at": "2026-08-23T10:00:00Z",
+  "completed_at": "2026-08-23T10:00:01Z",
+  "result_id": "inspection-batch-0001",
+  "is_ng": true,
+  "anomaly_score": 0.87,
+  "error": null
+}

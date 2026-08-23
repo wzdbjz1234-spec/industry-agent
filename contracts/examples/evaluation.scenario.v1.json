@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "fixture-offset-001",
+  "dataset_version": "phase13-v1",
+  "scenario": "fixture_offset",
+  "seed": 7,
+  "required_tools": [
+    "get_case_snapshot"
+  ],
+  "expected_status": "COMPLETED",
+  "expected_hypothesis_id": null,
+  "expected_required_information": [],
+  "forbid_hypotheses": false,
+  "hidden_truth": {}
+}

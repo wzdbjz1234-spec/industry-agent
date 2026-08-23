@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "config_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Config Id",
+      "type": "string"
+    },
+    "model": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Model",
+      "type": "string"
+    },
+    "prompt_version": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Prompt Version",
+      "type": "string"
+    },
+    "tool_version": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "max_iterations": {
+      "default": 8,
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Max Iterations",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "config_id",
+    "model",
+    "prompt_version",
+    "tool_version"
+  ],
+  "title": "EvaluationConfigContract",
+  "type": "object"
+}

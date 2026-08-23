@@ -1,0 +1,156 @@
+{
+  "$defs": {
+    "ProposalDecisionContract": {
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "proposal_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "case_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Case Id",
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "APPROVE",
+            "APPROVE_WITH_CHANGES",
+            "REJECT",
+            "REQUEST_REANALYSIS"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "decided_by": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Decided By",
+          "type": "string"
+        },
+        "decided_at": {
+          "format": "date-time",
+          "title": "Decided At",
+          "type": "string"
+        },
+        "comment": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Comment",
+          "type": "string"
+        },
+        "approved_steps": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Approved Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "decision_id",
+        "proposal_id",
+        "case_id",
+        "decision",
+        "decided_by",
+        "decided_at"
+      ],
+      "title": "ProposalDecisionContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "enum": [
+        "quality.investigation.approved.v1",
+        "quality.investigation.rejected.v1",
+        "quality.investigation.reanalysis.requested.v1"
+      ],
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "decision_id": {
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "proposal_id": {
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "decided_by": {
+      "title": "Decided By",
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/ProposalDecisionContract"
+    },
+    "approved_proposal_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Approved Proposal Id"
+    },
+    "new_analysis_run_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "New Analysis Run Id"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "decision_id",
+    "proposal_id",
+    "case_id",
+    "decided_by",
+    "decision"
+  ],
+  "title": "ApprovalEventContract",
+  "type": "object"
+}

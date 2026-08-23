@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "QmsTaskContract": {
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Task Id",
+          "type": "string"
+        },
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "proposal_id": {
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "external_system": {
+          "const": "MOCK_QMS",
+          "default": "MOCK_QMS",
+          "title": "External System",
+          "type": "string"
+        },
+        "status": {
+          "default": "OPEN",
+          "enum": [
+            "OPEN",
+            "IN_PROGRESS",
+            "CLOSED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "assignee_role": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Assignee Role",
+          "type": "string"
+        },
+        "created_by": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Created By",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "task_uri": {
+          "title": "Task Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "case_id",
+        "proposal_id",
+        "assignee_role",
+        "created_by",
+        "created_at",
+        "task_uri"
+      ],
+      "title": "QmsTaskContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "qms.task.created.v1",
+      "default": "qms.task.created.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "task": {
+      "$ref": "#/$defs/QmsTaskContract"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "task"
+  ],
+  "title": "QmsTaskCreatedEventContract",
+  "type": "object"
+}

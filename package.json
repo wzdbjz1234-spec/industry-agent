@@ -1,0 +1,6 @@
+{
+  "name": "quality-case-agent-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo workspace for the Quality Case Investigation Agent"
+}

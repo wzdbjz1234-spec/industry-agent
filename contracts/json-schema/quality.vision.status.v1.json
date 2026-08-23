@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "description": "Operational status of the continuous visual worker.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "worker": {
+      "const": "vision-worker",
+      "default": "vision-worker",
+      "title": "Worker",
+      "type": "string"
+    },
+    "running": {
+      "title": "Running",
+      "type": "boolean"
+    },
+    "queued": {
+      "minimum": 0,
+      "title": "Queued",
+      "type": "integer"
+    },
+    "completed": {
+      "minimum": 0,
+      "title": "Completed",
+      "type": "integer"
+    },
+    "failed": {
+      "minimum": 0,
+      "title": "Failed",
+      "type": "integer"
+    },
+    "registered_schemes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Registered Schemes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "running",
+    "queued",
+    "completed",
+    "failed",
+    "registered_schemes"
+  ],
+  "title": "VisionStatusContract",
+  "type": "object"
+}

@@ -1,0 +1,137 @@
+{
+  "additionalProperties": false,
+  "description": "A frame submitted to a registered visual detector.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "frame_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Frame Id",
+      "type": "string"
+    },
+    "inspected_at": {
+      "format": "date-time",
+      "title": "Inspected At",
+      "type": "string"
+    },
+    "factory_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Factory Id",
+      "type": "string"
+    },
+    "line_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Line Id",
+      "type": "string"
+    },
+    "station_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Station Id",
+      "type": "string"
+    },
+    "product_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Product Id",
+      "type": "string"
+    },
+    "unit_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Unit Id",
+      "type": "string"
+    },
+    "batch_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "scheme": {
+      "default": "efficientad",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Scheme",
+      "type": "string"
+    },
+    "image_path": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Path"
+    },
+    "image_base64": {
+      "anyOf": [
+        {
+          "maxLength": 16000000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Base64"
+    },
+    "image_uri": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Uri"
+    },
+    "metadata": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "frame_id",
+    "inspected_at",
+    "factory_id",
+    "line_id",
+    "station_id",
+    "product_id",
+    "unit_id",
+    "batch_id"
+  ],
+  "title": "VisionFrameRequestContract",
+  "type": "object"
+}

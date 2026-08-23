@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "frame_id": "frame-0001",
+  "inspected_at": "2026-08-23T10:00:00Z",
+  "factory_id": "factory-01",
+  "line_id": "line-01",
+  "station_id": "camera-01",
+  "product_id": "part-A",
+  "unit_id": "unit-0001",
+  "batch_id": "batch-20260823-01",
+  "scheme": "efficientad",
+  "image_path": "/data/incoming/frame-0001.png",
+  "image_base64": null,
+  "image_uri": null,
+  "metadata": {}
+}

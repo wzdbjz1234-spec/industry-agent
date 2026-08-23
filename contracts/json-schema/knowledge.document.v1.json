@@ -1,0 +1,84 @@
+{
+  "additionalProperties": false,
+  "description": "Minimum metadata required before a document can be indexed.",
+  "properties": {
+    "document_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Document Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "version": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    },
+    "source_type": {
+      "enum": [
+        "TECHNICAL_DOCUMENT",
+        "VERIFIED_CASE"
+      ],
+      "title": "Source Type",
+      "type": "string"
+    },
+    "content": {
+      "maxLength": 200000,
+      "minLength": 1,
+      "title": "Content",
+      "type": "string"
+    },
+    "effective_from": {
+      "format": "date-time",
+      "title": "Effective From",
+      "type": "string"
+    },
+    "effective_to": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Effective To"
+    },
+    "applicability": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1,
+      "title": "Applicability",
+      "type": "object"
+    },
+    "status": {
+      "default": "ACTIVE",
+      "enum": [
+        "ACTIVE",
+        "SUPERSEDED"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "document_id",
+    "title",
+    "version",
+    "source_type",
+    "content",
+    "effective_from",
+    "applicability"
+  ],
+  "title": "KnowledgeDocumentContract",
+  "type": "object"
+}

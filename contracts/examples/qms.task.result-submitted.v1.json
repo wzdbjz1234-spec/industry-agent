@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "event_type": "qms.task.result-submitted.v1",
+  "event_id": "qms-result-phase9-001",
+  "occurred_at": "2026-08-23T13:20:00Z",
+  "confirmation_id": "confirmation-phase9-001",
+  "case_id": "case-fixture-offset-001",
+  "task_id": "QMS-TASK-0001",
+  "confirmed_by": "engineer-01",
+  "actual_root_cause": {
+    "code": "FIXTURE_LOCATING_PIN_LOOSE",
+    "description": "定位销松动导致工件向右上方向偏移"
+  },
+  "actual_actions": ["更换定位销", "重新标定夹具"],
+  "verification": {
+    "status": "VERIFIED_EFFECTIVE",
+    "start": "2026-08-23T12:30:00Z",
+    "end": "2026-08-23T13:15:00Z",
+    "sample_count": 500,
+    "ng_rate_before": 0.087,
+    "ng_rate_after": 0.018,
+    "acceptance_criteria": "连续500件NG率低于2%",
+    "notes": "异常空间聚集消失"
+  },
+  "agent_assessment": {
+    "top_hypothesis_matched": true,
+    "useful": true,
+    "human_rating": 4,
+    "comment": "排查步骤有效"
+  }
+}

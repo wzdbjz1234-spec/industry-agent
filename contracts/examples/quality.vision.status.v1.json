@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "worker": "vision-worker",
+  "running": true,
+  "queued": 2,
+  "completed": 128,
+  "failed": 1,
+  "registered_schemes": [
+    "efficientad",
+    "anomlib"
+  ]
+}

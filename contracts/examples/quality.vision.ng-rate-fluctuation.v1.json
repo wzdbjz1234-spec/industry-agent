@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "event_id": "ng-fluctuation:scope-hash:trace-0001:RISING",
+  "event_type": "quality.vision.ng-rate-fluctuation.v1",
+  "occurred_at": "2026-08-23T10:00:20Z",
+  "trace_id": "trace-0001",
+  "scope": {
+    "factory_id": "factory-01",
+    "line_id": "line-01",
+    "station_id": "camera-01"
+  },
+  "window_start": "2026-08-23T10:00:01Z",
+  "window_end": "2026-08-23T10:00:20Z",
+  "sample_count": 20,
+  "baseline_ng_rate": 0.1,
+  "recent_ng_rate": 0.5,
+  "delta": 0.4,
+  "direction": "RISING",
+  "details": {
+    "window_size": 20,
+    "minimum_samples": 6
+  }
+}

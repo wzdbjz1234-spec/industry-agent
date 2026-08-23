@@ -1,0 +1,98 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scenario_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "dataset_version": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Dataset Version",
+      "type": "string"
+    },
+    "scenario": {
+      "enum": [
+        "fixture_offset",
+        "illumination_drift",
+        "insufficient_evidence"
+      ],
+      "title": "Scenario",
+      "type": "string"
+    },
+    "seed": {
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "required_tools": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Required Tools",
+      "type": "array"
+    },
+    "expected_status": {
+      "enum": [
+        "COMPLETED",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "title": "Expected Status",
+      "type": "string"
+    },
+    "expected_hypothesis_id": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Hypothesis Id"
+    },
+    "expected_required_information": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Expected Required Information",
+      "type": "array"
+    },
+    "forbid_hypotheses": {
+      "default": false,
+      "title": "Forbid Hypotheses",
+      "type": "boolean"
+    },
+    "hidden_truth": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "maxProperties": 20,
+      "title": "Hidden Truth",
+      "type": "object"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "dataset_version",
+    "scenario",
+    "seed",
+    "required_tools",
+    "expected_status"
+  ],
+  "title": "EvaluationScenarioContract",
+  "type": "object"
+}

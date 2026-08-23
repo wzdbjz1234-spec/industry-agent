@@ -1,0 +1,68 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "proposal_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "case_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "APPROVE",
+        "APPROVE_WITH_CHANGES",
+        "REJECT",
+        "REQUEST_REANALYSIS"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "decided_by": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Decided By",
+      "type": "string"
+    },
+    "decided_at": {
+      "format": "date-time",
+      "title": "Decided At",
+      "type": "string"
+    },
+    "comment": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Comment",
+      "type": "string"
+    },
+    "approved_steps": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Approved Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "decision_id",
+    "proposal_id",
+    "case_id",
+    "decision",
+    "decided_by",
+    "decided_at"
+  ],
+  "title": "ProposalDecisionContract",
+  "type": "object"
+}

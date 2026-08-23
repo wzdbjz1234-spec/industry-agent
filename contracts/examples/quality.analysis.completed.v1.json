@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "event_id": "ar-demo-001:completed",
+  "event_type": "quality.analysis.completed.v1",
+  "occurred_at": "2026-08-22T02:03:10Z",
+  "analysis_run_id": "ar-demo-001",
+  "case_id": "qc-demo-001",
+  "snapshot_id": "qc-demo-001-snapshot-01",
+  "status": "COMPLETED",
+  "proposal_id": "prop-ar-demo-001",
+  "trace_event_count": 10
+}

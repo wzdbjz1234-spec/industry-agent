@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "cases_per_day": 8.0,
+  "production_days_per_year": 250.0,
+  "manual_triage_minutes": 30.0,
+  "assisted_review_minutes": 8.0,
+  "labor_cost_per_hour_cny": 150.0,
+  "cost_per_analysis_cny": 0.8,
+  "annual_infrastructure_cost_cny": 20000.0,
+  "initial_investment_cny": 120000.0,
+  "avoided_downtime_cny": 0.0,
+  "avoided_scrap_cny": 0.0,
+  "reuse_value_cny": 0.0
+}

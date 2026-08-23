@@ -1,0 +1,202 @@
+{
+  "$defs": {
+    "ProposalContract": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "proposal_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "original_proposal_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Original Proposal Id"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "analysis_run_id": {
+          "title": "Analysis Run Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/ProposalStepContract"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        },
+        "requested_role": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requested Role",
+          "type": "string"
+        },
+        "priority": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "risk_level": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Risk Level",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "status": {
+          "default": "PENDING_APPROVAL",
+          "enum": [
+            "PENDING_APPROVAL",
+            "APPROVED",
+            "REJECTED",
+            "SUPERSEDED"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "case_id",
+        "analysis_run_id",
+        "created_at",
+        "title",
+        "reason",
+        "steps",
+        "requested_role",
+        "priority",
+        "risk_level"
+      ],
+      "title": "ProposalContract",
+      "type": "object"
+    },
+    "ProposalStepContract": {
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "minimum": 1,
+          "title": "Order",
+          "type": "integer"
+        },
+        "instruction": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Instruction",
+          "type": "string"
+        },
+        "expected_evidence": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Expected Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "order",
+        "instruction",
+        "expected_evidence"
+      ],
+      "title": "ProposalStepContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "quality.investigation.proposed.v1",
+      "default": "quality.investigation.proposed.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "proposal": {
+      "$ref": "#/$defs/ProposalContract"
+    },
+    "analysis_run_id": {
+      "title": "Analysis Run Id",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "proposal",
+    "analysis_run_id",
+    "case_id"
+  ],
+  "title": "InvestigationProposedEventContract",
+  "type": "object"
+}

@@ -1,0 +1,241 @@
+{
+  "$defs": {
+    "EvaluationCaseResultContract": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "config_id": {
+          "title": "Config Id",
+          "type": "string"
+        },
+        "dataset_version": {
+          "title": "Dataset Version",
+          "type": "string"
+        },
+        "run_fingerprint": {
+          "title": "Run Fingerprint",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "schema_valid": {
+          "title": "Schema Valid",
+          "type": "boolean"
+        },
+        "required_tool_coverage": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Required Tool Coverage",
+          "type": "number"
+        },
+        "evidence_reference_coverage": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Evidence Reference Coverage",
+          "type": "number"
+        },
+        "applicability_accuracy": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Applicability Accuracy",
+          "type": "number"
+        },
+        "safety_stop_correct": {
+          "title": "Safety Stop Correct",
+          "type": "boolean"
+        },
+        "forbidden_conclusion_violations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Forbidden Conclusion Violations",
+          "type": "integer"
+        },
+        "tool_call_count": {
+          "minimum": 0,
+          "title": "Tool Call Count",
+          "type": "integer"
+        },
+        "retrieval_call_count": {
+          "minimum": 0,
+          "title": "Retrieval Call Count",
+          "type": "integer"
+        },
+        "estimated_tokens": {
+          "minimum": 0,
+          "title": "Estimated Tokens",
+          "type": "integer"
+        },
+        "estimated_cost_cny": {
+          "minimum": 0.0,
+          "title": "Estimated Cost Cny",
+          "type": "number"
+        },
+        "latency_ms": {
+          "minimum": 0,
+          "title": "Latency Ms",
+          "type": "integer"
+        },
+        "time_to_first_analysis_ms": {
+          "minimum": 0,
+          "title": "Time To First Analysis Ms",
+          "type": "integer"
+        },
+        "failure_reasons": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Failure Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "config_id",
+        "dataset_version",
+        "run_fingerprint",
+        "status",
+        "passed",
+        "schema_valid",
+        "required_tool_coverage",
+        "evidence_reference_coverage",
+        "applicability_accuracy",
+        "safety_stop_correct",
+        "tool_call_count",
+        "retrieval_call_count",
+        "estimated_tokens",
+        "estimated_cost_cny",
+        "latency_ms",
+        "time_to_first_analysis_ms"
+      ],
+      "title": "EvaluationCaseResultContract",
+      "type": "object"
+    },
+    "EvaluationConfigContract": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "config_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Config Id",
+          "type": "string"
+        },
+        "model": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "prompt_version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Prompt Version",
+          "type": "string"
+        },
+        "tool_version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "max_iterations": {
+          "default": 8,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Max Iterations",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "config_id",
+        "model",
+        "prompt_version",
+        "tool_version"
+      ],
+      "title": "EvaluationConfigContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "report_id": {
+      "title": "Report Id",
+      "type": "string"
+    },
+    "dataset_version": {
+      "title": "Dataset Version",
+      "type": "string"
+    },
+    "repeat_index": {
+      "minimum": 1,
+      "title": "Repeat Index",
+      "type": "integer"
+    },
+    "config": {
+      "$ref": "#/$defs/EvaluationConfigContract"
+    },
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/EvaluationCaseResultContract"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Cases",
+      "type": "array"
+    },
+    "summary": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Summary",
+      "type": "object"
+    }
+  },
+  "required": [
+    "report_id",
+    "dataset_version",
+    "repeat_index",
+    "config",
+    "cases",
+    "summary"
+  ],
+  "title": "EvaluationReportContract",
+  "type": "object"
+}

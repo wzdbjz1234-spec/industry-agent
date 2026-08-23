@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "classification": "ILLUSTRATIVE",
+  "annual_cases": 2000.0,
+  "annual_labor_hours_saved": 733.33,
+  "annual_benefit_cny": 110000.0,
+  "annual_cost_cny": 21600.0,
+  "annual_net_benefit_cny": 88400.0,
+  "roi_percent": -26.33,
+  "payback_months": 16.29,
+  "assumptions": {
+    "cases_per_day": 8.0
+  },
+  "disclaimer": "示例测算：金额为 Illustrative，不代表真实客户收益。"
+}

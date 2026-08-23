@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "ProposalStepContract": {
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "minimum": 1,
+          "title": "Order",
+          "type": "integer"
+        },
+        "instruction": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Instruction",
+          "type": "string"
+        },
+        "expected_evidence": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Expected Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "order",
+        "instruction",
+        "expected_evidence"
+      ],
+      "title": "ProposalStepContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Transport contract owned by the QMS boundary, not by the Agent.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "proposal_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "case_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Case Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/ProposalStepContract"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "assignee_role": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Assignee Role",
+      "type": "string"
+    },
+    "priority": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "Priority",
+      "type": "string"
+    },
+    "risk_level": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "title": "Risk Level",
+      "type": "string"
+    }
+  },
+  "required": [
+    "proposal_id",
+    "case_id",
+    "title",
+    "reason",
+    "steps",
+    "assignee_role",
+    "priority",
+    "risk_level"
+  ],
+  "title": "QmsCreateTaskRequestContract",
+  "type": "object"
+}

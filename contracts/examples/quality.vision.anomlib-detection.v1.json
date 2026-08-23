@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "frame_id": "frame-0001",
+  "inspected_at": "2026-08-23T10:00:00Z",
+  "factory_id": "factory-01",
+  "line_id": "line-01",
+  "station_id": "camera-01",
+  "product_id": "part-A",
+  "unit_id": "unit-0001",
+  "batch_id": "batch-20260823-01",
+  "scheme": "anomlib",
+  "detector_version": "anomlib-demo-1",
+  "adapter_version": "anomlib-input-v1",
+  "anomaly_score": 0.87,
+  "threshold": 0.2,
+  "is_ng": true,
+  "defect_type": "surface_defect",
+  "defect_region": null,
+  "image_uri": null,
+  "anomaly_map_uri": null,
+  "metadata": {}
+}

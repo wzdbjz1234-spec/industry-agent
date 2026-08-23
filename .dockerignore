@@ -1,0 +1,14 @@
+.git
+.venv
+.pytest_cache
+.mypy_cache
+.ruff_cache
+__pycache__
+web/node_modules
+web/dist
+efficientad-package/data
+efficientad-package/mydataset
+efficientad-package/output
+efficientad-package/build
+efficientad-package/dist
+*.pyc

@@ -1,0 +1,79 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "cases_per_day": {
+      "default": 8.0,
+      "minimum": 0.0,
+      "title": "Cases Per Day",
+      "type": "number"
+    },
+    "production_days_per_year": {
+      "default": 250.0,
+      "minimum": 0.0,
+      "title": "Production Days Per Year",
+      "type": "number"
+    },
+    "manual_triage_minutes": {
+      "default": 30.0,
+      "minimum": 0.0,
+      "title": "Manual Triage Minutes",
+      "type": "number"
+    },
+    "assisted_review_minutes": {
+      "default": 8.0,
+      "minimum": 0.0,
+      "title": "Assisted Review Minutes",
+      "type": "number"
+    },
+    "labor_cost_per_hour_cny": {
+      "default": 150.0,
+      "minimum": 0.0,
+      "title": "Labor Cost Per Hour Cny",
+      "type": "number"
+    },
+    "cost_per_analysis_cny": {
+      "default": 0.8,
+      "minimum": 0.0,
+      "title": "Cost Per Analysis Cny",
+      "type": "number"
+    },
+    "annual_infrastructure_cost_cny": {
+      "default": 20000.0,
+      "minimum": 0.0,
+      "title": "Annual Infrastructure Cost Cny",
+      "type": "number"
+    },
+    "initial_investment_cny": {
+      "default": 120000.0,
+      "minimum": 0.0,
+      "title": "Initial Investment Cny",
+      "type": "number"
+    },
+    "avoided_downtime_cny": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Avoided Downtime Cny",
+      "type": "number"
+    },
+    "avoided_scrap_cny": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Avoided Scrap Cny",
+      "type": "number"
+    },
+    "reuse_value_cny": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Reuse Value Cny",
+      "type": "number"
+    }
+  },
+  "title": "ROICalculationRequestContract",
+  "type": "object"
+}

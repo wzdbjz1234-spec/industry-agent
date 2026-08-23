@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "event_id": "quality.case.opened.v1:qc-demo-001",
+  "event_type": "quality.case.opened.v1",
+  "occurred_at": "2026-08-22T02:02:00Z",
+  "case_id": "qc-demo-001",
+  "snapshot_id": "qc-demo-001-snapshot-01"
+}

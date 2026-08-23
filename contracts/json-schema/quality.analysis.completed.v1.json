@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "quality.analysis.completed.v1",
+      "default": "quality.analysis.completed.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "analysis_run_id": {
+      "title": "Analysis Run Id",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "COMPLETED",
+        "INSUFFICIENT_EVIDENCE",
+        "BUDGET_EXHAUSTED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "proposal_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Proposal Id"
+    },
+    "trace_event_count": {
+      "minimum": 0,
+      "title": "Trace Event Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "analysis_run_id",
+    "case_id",
+    "snapshot_id",
+    "status",
+    "trace_event_count"
+  ],
+  "title": "AnalysisCompletedEventContract",
+  "type": "object"
+}

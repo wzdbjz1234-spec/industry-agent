@@ -1,0 +1,91 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "evidence_id": {
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "document_id": {
+      "title": "Document Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "source_type": {
+      "enum": [
+        "TECHNICAL_DOCUMENT",
+        "VERIFIED_CASE"
+      ],
+      "title": "Source Type",
+      "type": "string"
+    },
+    "section": {
+      "title": "Section",
+      "type": "string"
+    },
+    "page": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Page"
+    },
+    "content": {
+      "title": "Content",
+      "type": "string"
+    },
+    "retrieval_score": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Retrieval Score",
+      "type": "number"
+    },
+    "applicability": {
+      "enum": [
+        "APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "title": "Applicability",
+      "type": "string"
+    },
+    "applicability_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Applicability Reasons",
+      "type": "array"
+    },
+    "source_metadata": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Source Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "document_id",
+    "title",
+    "version",
+    "source_type",
+    "section",
+    "content",
+    "retrieval_score",
+    "applicability"
+  ],
+  "title": "KnowledgeSearchHitContract",
+  "type": "object"
+}

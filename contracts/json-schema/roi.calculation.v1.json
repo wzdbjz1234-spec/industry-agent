@@ -1,0 +1,83 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "classification": {
+      "const": "ILLUSTRATIVE",
+      "default": "ILLUSTRATIVE",
+      "title": "Classification",
+      "type": "string"
+    },
+    "annual_cases": {
+      "title": "Annual Cases",
+      "type": "number"
+    },
+    "annual_labor_hours_saved": {
+      "title": "Annual Labor Hours Saved",
+      "type": "number"
+    },
+    "annual_benefit_cny": {
+      "title": "Annual Benefit Cny",
+      "type": "number"
+    },
+    "annual_cost_cny": {
+      "title": "Annual Cost Cny",
+      "type": "number"
+    },
+    "annual_net_benefit_cny": {
+      "title": "Annual Net Benefit Cny",
+      "type": "number"
+    },
+    "roi_percent": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Roi Percent"
+    },
+    "payback_months": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Payback Months"
+    },
+    "assumptions": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Assumptions",
+      "type": "object"
+    },
+    "disclaimer": {
+      "default": "示例测算：金额为 Illustrative，不代表真实客户收益。",
+      "title": "Disclaimer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "annual_cases",
+    "annual_labor_hours_saved",
+    "annual_benefit_cny",
+    "annual_cost_cny",
+    "annual_net_benefit_cny",
+    "roi_percent",
+    "payback_months",
+    "assumptions"
+  ],
+  "title": "ROICalculationContract",
+  "type": "object"
+}

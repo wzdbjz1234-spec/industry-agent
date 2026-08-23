@@ -1,0 +1,228 @@
+{
+  "$defs": {
+    "DefectRegionContract": {
+      "additionalProperties": false,
+      "description": "Normalized location of a detected defect.",
+      "properties": {
+        "x_normalized": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X Normalized",
+          "type": "number"
+        },
+        "y_normalized": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y Normalized",
+          "type": "number"
+        },
+        "area_ratio": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Area Ratio",
+          "type": "number"
+        },
+        "region_label": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Region Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "x_normalized",
+        "y_normalized",
+        "area_ratio",
+        "region_label"
+      ],
+      "title": "DefectRegionContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Normalized output accepted from any anomlib visual scheme.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "frame_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Frame Id",
+      "type": "string"
+    },
+    "inspected_at": {
+      "format": "date-time",
+      "title": "Inspected At",
+      "type": "string"
+    },
+    "factory_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Factory Id",
+      "type": "string"
+    },
+    "line_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Line Id",
+      "type": "string"
+    },
+    "station_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Station Id",
+      "type": "string"
+    },
+    "product_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Product Id",
+      "type": "string"
+    },
+    "unit_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Unit Id",
+      "type": "string"
+    },
+    "batch_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "scheme": {
+      "default": "anomlib",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Scheme",
+      "type": "string"
+    },
+    "detector_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Detector Version",
+      "type": "string"
+    },
+    "adapter_version": {
+      "default": "anomlib-input-v1",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Adapter Version",
+      "type": "string"
+    },
+    "anomaly_score": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Anomaly Score",
+      "type": "number"
+    },
+    "threshold": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Threshold",
+      "type": "number"
+    },
+    "is_ng": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Is Ng"
+    },
+    "defect_type": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Defect Type"
+    },
+    "defect_region": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DefectRegionContract"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "image_uri": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image Uri"
+    },
+    "anomaly_map_uri": {
+      "anyOf": [
+        {
+          "maxLength": 2048,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Anomaly Map Uri"
+    },
+    "metadata": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "frame_id",
+    "inspected_at",
+    "factory_id",
+    "line_id",
+    "station_id",
+    "product_id",
+    "unit_id",
+    "batch_id",
+    "detector_version",
+    "anomaly_score",
+    "threshold"
+  ],
+  "title": "AnomlibDetectionRequestContract",
+  "type": "object"
+}

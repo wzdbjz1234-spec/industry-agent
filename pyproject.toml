@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quality-case-agent"
+version = "0.1.0"
+description = "Event-driven quality case investigation agent"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "httpx>=0.27,<1",
+    "pydantic>=2.7,<3",
+    "pypdf>=5,<7",
+    "uvicorn[standard]>=0.30,<1",
+]
+
+[tool.setuptools.packages.find]
+where = ["backend/src", "."]
+include = ["quality_case_agent*", "simulator*"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend/src", "."]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.10",
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+mypy_path = ["backend/src"]
+packages = ["quality_case_agent"]
+strict = true

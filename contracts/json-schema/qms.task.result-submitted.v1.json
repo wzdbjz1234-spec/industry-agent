@@ -1,0 +1,201 @@
+{
+  "$defs": {
+    "ActualRootCauseContract": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "description"
+      ],
+      "title": "ActualRootCauseContract",
+      "type": "object"
+    },
+    "AgentAssessmentContract": {
+      "additionalProperties": false,
+      "properties": {
+        "top_hypothesis_matched": {
+          "title": "Top Hypothesis Matched",
+          "type": "boolean"
+        },
+        "useful": {
+          "title": "Useful",
+          "type": "boolean"
+        },
+        "human_rating": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Human Rating",
+          "type": "integer"
+        },
+        "comment": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Comment",
+          "type": "string"
+        }
+      },
+      "required": [
+        "top_hypothesis_matched",
+        "useful",
+        "human_rating"
+      ],
+      "title": "AgentAssessmentContract",
+      "type": "object"
+    },
+    "VerificationContract": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "VERIFIED_EFFECTIVE",
+            "NOT_VERIFIED",
+            "INCONCLUSIVE"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "sample_count": {
+          "minimum": 1,
+          "title": "Sample Count",
+          "type": "integer"
+        },
+        "ng_rate_before": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Ng Rate Before",
+          "type": "number"
+        },
+        "ng_rate_after": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Ng Rate After",
+          "type": "number"
+        },
+        "acceptance_criteria": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Acceptance Criteria",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "start",
+        "end",
+        "sample_count",
+        "ng_rate_before",
+        "ng_rate_after",
+        "acceptance_criteria"
+      ],
+      "title": "VerificationContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "qms.task.result-submitted.v1",
+      "default": "qms.task.result-submitted.v1",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "event_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "confirmation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Confirmation Id",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "confirmed_by": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Confirmed By",
+      "type": "string"
+    },
+    "actual_root_cause": {
+      "$ref": "#/$defs/ActualRootCauseContract"
+    },
+    "actual_actions": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Actual Actions",
+      "type": "array"
+    },
+    "verification": {
+      "$ref": "#/$defs/VerificationContract"
+    },
+    "agent_assessment": {
+      "$ref": "#/$defs/AgentAssessmentContract"
+    }
+  },
+  "required": [
+    "event_id",
+    "occurred_at",
+    "confirmation_id",
+    "case_id",
+    "task_id",
+    "confirmed_by",
+    "actual_root_cause",
+    "actual_actions",
+    "verification",
+    "agent_assessment"
+  ],
+  "title": "QmsTaskResultContract",
+  "type": "object"
+}

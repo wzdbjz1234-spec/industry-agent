@@ -1,0 +1,85 @@
+{
+  "additionalProperties": false,
+  "description": "Metadata submitted alongside a Markdown or PDF upload.",
+  "properties": {
+    "document_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Document Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "version": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    },
+    "source_type": {
+      "enum": [
+        "TECHNICAL_DOCUMENT",
+        "VERIFIED_CASE"
+      ],
+      "title": "Source Type",
+      "type": "string"
+    },
+    "file_name": {
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "File Name",
+      "type": "string"
+    },
+    "content_type": {
+      "enum": [
+        "text/markdown",
+        "text/plain",
+        "application/pdf"
+      ],
+      "title": "Content Type",
+      "type": "string"
+    },
+    "effective_from": {
+      "format": "date-time",
+      "title": "Effective From",
+      "type": "string"
+    },
+    "effective_to": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Effective To"
+    },
+    "applicability": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1,
+      "title": "Applicability",
+      "type": "object"
+    }
+  },
+  "required": [
+    "document_id",
+    "title",
+    "version",
+    "source_type",
+    "file_name",
+    "content_type",
+    "effective_from",
+    "applicability"
+  ],
+  "title": "KnowledgeDocumentUploadContract",
+  "type": "object"
+}

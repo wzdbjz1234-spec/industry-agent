@@ -1,0 +1,7 @@
+{
+  "name": "ROI-30",
+  "model": "retrained_roi30",
+  "product": "retrained_roi30",
+  "roi": [1418, 564, 173, 196],
+  "masks": []
+}

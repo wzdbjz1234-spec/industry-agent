@@ -1,0 +1,36 @@
+{
+  "dataset_version": "phase13-v1",
+  "scenarios": [
+    {
+      "scenario_id": "fixture-offset-001",
+      "dataset_version": "phase13-v1",
+      "scenario": "fixture_offset",
+      "seed": 7,
+      "required_tools": ["get_case_snapshot", "compare_quality_metrics", "get_representative_samples", "search_knowledge_base"],
+      "expected_status": "COMPLETED",
+      "expected_hypothesis_id": "H-01",
+      "hidden_truth": {"root_cause_family": "fixture_positioning_offset"}
+    },
+    {
+      "scenario_id": "illumination-drift-001",
+      "dataset_version": "phase13-v1",
+      "scenario": "illumination_drift",
+      "seed": 7,
+      "required_tools": ["get_case_snapshot", "compare_quality_metrics", "get_representative_samples", "search_knowledge_base"],
+      "expected_status": "COMPLETED",
+      "expected_hypothesis_id": "H-ILL-01",
+      "hidden_truth": {"root_cause_family": "illumination_or_exposure_drift"}
+    },
+    {
+      "scenario_id": "insufficient-evidence-001",
+      "dataset_version": "phase13-v1",
+      "scenario": "insufficient_evidence",
+      "seed": 7,
+      "required_tools": ["get_case_snapshot", "check_data_quality"],
+      "expected_status": "INSUFFICIENT_EVIDENCE",
+      "expected_required_information": ["统一模型版本后的至少500条检测记录"],
+      "forbid_hypotheses": true,
+      "hidden_truth": {"root_cause_family": "unknown_until_more_evidence"}
+    }
+  ]
+}
