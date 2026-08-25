@@ -194,6 +194,37 @@ export type VerifiedCase = {
   archive_uri?: string | null;
 };
 
+export type MonitoringSignal = {
+  signal_type: "EWMA" | "CUSUM" | "PSI" | "KS" | "DATA_QUALITY";
+  statistic: number;
+  threshold: number;
+  severity: "INFO" | "WARNING" | "HIGH" | "CRITICAL";
+  message: string;
+};
+
+export type MonitoringDecision = {
+  decision_id: string;
+  evaluated_at: string;
+  dimension_key: [string, string, string, string];
+  model_version: string;
+  window_start: string;
+  status: "NORMAL" | "PROCESS_SHIFT" | "MODEL_DRIFT" | "DATA_QUALITY_BLOCK" | "BASELINE_MISSING";
+  severity: "INFO" | "WARNING" | "HIGH" | "CRITICAL";
+  action: "NONE" | "OPEN_CASE" | "MERGE_CASE" | "BLOCK";
+  baseline_version?: string | null;
+  signals: MonitoringSignal[];
+  data_quality_warnings: string[];
+  cooldown_minutes: number;
+};
+
+export type MonitoringReport = {
+  schema_version: "1.0";
+  evaluated_at: string;
+  window_count: number;
+  baseline_count: number;
+  decisions: MonitoringDecision[];
+};
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { "content-type": "application/json", ...(init?.headers ?? {}) },
@@ -239,6 +270,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  monitoringHealth: (windowMinutes = 1) => request<MonitoringReport>(`/monitoring/health?window_minutes=${windowMinutes}`),
+  buildMonitoringBaseline: (windowMinutes = 1, baselineVersion = "web-v1") =>
+    request<{ baseline_count: number; baselines: Array<Record<string, unknown>> }>(
+      `/monitoring/baseline?window_minutes=${windowMinutes}&baseline_version=${encodeURIComponent(baselineVersion)}`,
+      { method: "POST" },
+    ),
   decide: (proposal: Proposal, decision: "APPROVE" | "REJECT") =>
     request<Record<string, unknown>>(`/proposals/${proposal.proposal_id}/decisions`, {
       method: "POST",

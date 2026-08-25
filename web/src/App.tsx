@@ -12,8 +12,9 @@ import {
   type QualityCase, type VerifiedCase, type VisionEvent, type VisionStatus,
   type WorkerStatus,
 } from "./api/client";
+import ModelHealth from "./features/model_health/ModelHealth";
 
-type Tab = "monitor" | "events" | "cases" | "approval" | "qms" | "library" | "operations" | "evaluation" | "documents";
+type Tab = "monitor" | "events" | "cases" | "approval" | "qms" | "library" | "operations" | "evaluation" | "documents" | "model-health";
 type DemoStage = 0 | 1 | 2 | 3 | 4 | 5;
 
 const NAV_GROUPS: Array<{ title: string; items: Array<{ id: Tab; label: string; icon: typeof Activity; count?: string }> }> = [
@@ -28,6 +29,7 @@ const NAV_GROUPS: Array<{ title: string; items: Array<{ id: Tab; label: string; 
     { id: "library", label: "验证案例库", icon: Database },
   ] },
   { title: "系统管理", items: [
+    { id: "model-health", label: "模型健康度", icon: ShieldCheck },
     { id: "operations", label: "系统运行", icon: Activity },
     { id: "evaluation", label: "模型评估", icon: Gauge },
     { id: "documents", label: "知识文档", icon: FileSearch },
@@ -138,6 +140,7 @@ export default function App() {
         {tab === "operations" && <Operations workers={workers} delivery={delivery} visionStatus={visionStatus} onRefresh={refresh} />}
         {tab === "evaluation" && <Evaluation reports={evaluationReports} onRefresh={refresh} />}
         {tab === "documents" && <Documents onMessage={setMessage} />}
+        {tab === "model-health" && <ModelHealth />}
       </div>
     </main>
   </div>;

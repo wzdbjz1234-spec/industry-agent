@@ -45,6 +45,15 @@ class PrometheusMetrics:
         self.qms_delivery = Counter(
             "qms_delivery_total", "QMS delivery outcomes", ["status", "error_category"], registry=self.registry
         )
+        self.monitoring_decisions = Counter(
+            "monitoring_decisions_total", "Model/data monitoring decisions", ["status", "severity", "action"], registry=self.registry
+        )
+        self.monitoring_drift_score = Gauge(
+            "monitoring_drift_score", "Latest drift statistic by signal type", ["signal_type"], registry=self.registry
+        )
+        self.monitoring_data_quality_blocks = Counter(
+            "monitoring_data_quality_blocks_total", "Monitoring decisions blocked by data quality", ["reason"], registry=self.registry
+        )
 
     def record_worker(self, worker: str, *, status: str, duration_ms: int, error_category: str = "NONE") -> None:
         self.worker_events.labels(worker, status, error_category).inc()
@@ -65,6 +74,20 @@ class PrometheusMetrics:
     def record_stream(self, *, stream: str, consumer_group: str, pending: int, oldest_age_seconds: float) -> None:
         self.stream_backlog.labels(stream, consumer_group).set(max(0, pending))
         self.stream_oldest_age.labels(stream, consumer_group).set(max(0.0, oldest_age_seconds))
+
+    def record_monitoring(self, decision: object) -> None:
+        self.monitoring_decisions.labels(
+            str(getattr(decision, "status", "UNKNOWN")),
+            str(getattr(decision, "severity", "UNKNOWN")),
+            str(getattr(decision, "action", "UNKNOWN")),
+        ).inc()
+        for signal in getattr(decision, "signals", ()):
+            self.monitoring_drift_score.labels(str(getattr(signal, "signal_type", "UNKNOWN"))).set(
+                float(getattr(signal, "statistic", 0.0))
+            )
+        if str(getattr(decision, "status", "")) == "DATA_QUALITY_BLOCK":
+            for warning in getattr(decision, "data_quality_warnings", ()):
+                self.monitoring_data_quality_blocks.labels(str(warning)).inc()
 
     def render(self) -> bytes:
         return generate_latest(self.registry)

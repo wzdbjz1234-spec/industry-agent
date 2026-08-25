@@ -8,6 +8,7 @@ continues to use in-memory adapters, while production entrypoints can call
 
 from dataclasses import dataclass
 
+from quality_case_agent.adapters.postgres.monitoring import SqlAlchemyMonitoringBaselineStore
 from quality_case_agent.adapters.postgres.repositories import (
     SqlAlchemyAnalysisRunStore,
     SqlAlchemyInboxStore,
@@ -29,6 +30,7 @@ class PersistentResources:
     runs: SqlAlchemyAnalysisRunStore
     outbox: SqlAlchemyOutboxStore
     inbox: SqlAlchemyInboxStore
+    monitoring_baselines: SqlAlchemyMonitoringBaselineStore
 
 
 def build_persistent_resources(settings: RuntimeSettings | None = None) -> PersistentResources:
@@ -45,4 +47,5 @@ def build_persistent_resources(settings: RuntimeSettings | None = None) -> Persi
         runs=SqlAlchemyAnalysisRunStore(database),
         outbox=SqlAlchemyOutboxStore(database),
         inbox=SqlAlchemyInboxStore(database),
+        monitoring_baselines=SqlAlchemyMonitoringBaselineStore(database),
     )

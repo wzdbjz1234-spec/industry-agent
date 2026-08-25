@@ -26,6 +26,7 @@ from quality_case_agent.adapters.in_memory.investigation import (
     InMemoryInvestigationEventPublisher,
 )
 from quality_case_agent.adapters.in_memory.knowledge import InMemoryKnowledgeBase
+from quality_case_agent.adapters.in_memory.monitoring import InMemoryMonitoringBaselineStore
 from quality_case_agent.adapters.in_memory.qms import InMemoryQmsDeliveryStore
 from quality_case_agent.adapters.in_memory.stores import (
     InMemoryInspectionStore,
@@ -50,6 +51,7 @@ from quality_case_agent.application.investigation.service import InvestigationSe
 from quality_case_agent.application.investigation.tools import ReadOnlyInvestigationTools
 from quality_case_agent.application.knowledge.service import KnowledgeService
 from quality_case_agent.application.metrics.worker import MetricsWorker
+from quality_case_agent.application.monitoring.service import MonitoringReport, MonitoringService
 from quality_case_agent.application.observability.service import (
     AnalysisMetricsRegistry,
     CaseEventTimelineProjection,
@@ -58,6 +60,7 @@ from quality_case_agent.application.observability.service import (
 from quality_case_agent.application.ports.inspection import InspectionResultStore
 from quality_case_agent.application.ports.investigation import AnalysisRunStore
 from quality_case_agent.application.ports.metrics import QualityMetricsStore
+from quality_case_agent.application.ports.monitoring import MonitoringBaselineStore
 from quality_case_agent.application.ports.qms import QmsDeliveryRecord
 from quality_case_agent.application.ports.quality_case import QualityCaseStore
 from quality_case_agent.application.qms.service import QmsIntegrationService, QmsWebhookService
@@ -85,6 +88,10 @@ from quality_case_agent.contracts.knowledge import (
     KnowledgeDocumentContract,
     KnowledgeDocumentUploadContract,
     KnowledgeTextUploadContract,
+)
+from quality_case_agent.contracts.monitoring import (
+    MonitoringDecisionContract,
+    MonitoringReportContract,
 )
 from quality_case_agent.contracts.qms import QmsTaskResultContract
 from quality_case_agent.contracts.vision import (
@@ -115,6 +122,7 @@ class ApplicationContainer:
     events: InMemoryInvestigationEventPublisher
     inspection: InspectionResultStore
     metrics: QualityMetricsStore
+    monitoring: MonitoringService
     knowledge_base: InMemoryKnowledgeBase
     qms: MockQmsAdapter
     qms_delivery: InMemoryQmsDeliveryStore
@@ -155,17 +163,20 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
     metrics: QualityMetricsStore
     cases: QualityCaseStore
     runs: AnalysisRunStore
+    monitoring_baselines: MonitoringBaselineStore
     if settings.mode == "production":
         resources = build_persistent_resources(settings)
         inspection = resources.inspection
         metrics = resources.metrics
         cases = resources.cases
         runs = resources.runs
+        monitoring_baselines = resources.monitoring_baselines
     else:
         inspection = InMemoryInspectionStore()
         metrics = InMemoryMetricsStore()
         cases = InMemoryQualityCaseStore()
         runs = InMemoryAnalysisRunStore()
+        monitoring_baselines = InMemoryMonitoringBaselineStore()
     knowledge_base = InMemoryKnowledgeBase(DeterministicEmbeddingProvider())
     knowledge = KnowledgeService(knowledge_base)
     _seed_demo_knowledge(knowledge_base)
@@ -178,6 +189,11 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
         prometheus_metrics,
         provider=str(getattr(llm, "provider", "unknown")),
         model=str(getattr(llm, "model", "unknown")),
+    )
+    monitoring = MonitoringService(
+        inspection,
+        monitoring_baselines,
+        exporter=prometheus_metrics,
     )
     tools = ReadOnlyInvestigationTools(cases, metrics, knowledge_base, inspection)
     investigation = InvestigationService(
@@ -239,6 +255,7 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
         events=event_publisher,
         inspection=inspection,
         metrics=metrics,
+        monitoring=monitoring,
         knowledge_base=knowledge_base,
         qms=qms,
         qms_delivery=qms_delivery,
@@ -717,6 +734,27 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
             "qms_processed": len(container.qms_worker.processed()),
         }
 
+    @app.post("/api/v1/monitoring/baseline")
+    def build_monitoring_baseline(
+        window_minutes: int = Query(default=1, ge=1, le=60),
+        baseline_version: str = Query(default="1.0", min_length=1, max_length=32),
+    ) -> dict[str, object]:
+        baselines = container.monitoring.build_baselines(
+            window_minutes=window_minutes,
+            baseline_version=baseline_version,
+        )
+        return {
+            "baseline_count": len(baselines),
+            "baselines": [baseline.as_dict() for baseline in baselines],
+        }
+
+    @app.get("/api/v1/monitoring/health", response_model=MonitoringReportContract)
+    def monitoring_health(
+        window_minutes: int = Query(default=1, ge=1, le=60),
+    ) -> MonitoringReportContract:
+        report = container.monitoring.evaluate(window_minutes=window_minutes)
+        return _monitoring_report_contract(report)
+
     @app.get("/metrics")
     def metrics_endpoint() -> Response:
         """Prometheus scrape endpoint with no case/document high-cardinality labels."""
@@ -896,6 +934,16 @@ def _vision_result_payload(result: VisionProcessingResult) -> dict[str, object]:
         "receipt": asdict(result.receipt),
         "events": list(result.events),
     }
+
+
+def _monitoring_report_contract(report: MonitoringReport) -> MonitoringReportContract:
+    decisions = [MonitoringDecisionContract.model_validate(decision.as_dict()) for decision in report.decisions]
+    return MonitoringReportContract(
+        evaluated_at=report.evaluated_at,
+        window_count=len(report.windows),
+        baseline_count=len(report.baselines),
+        decisions=decisions,
+    )
 
 
 app = create_app()
