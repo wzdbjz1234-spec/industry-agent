@@ -67,6 +67,9 @@ services:
       - "8000:8000"
     environment:
       QUALITY_RUNTIME_MODE: ${QUALITY_RUNTIME_MODE:-demo}
+      QUALITY_QMS_MODE: ${QUALITY_QMS_MODE:-SHADOW}
+      QUALITY_QMS_BASE_URL: ${QUALITY_QMS_BASE_URL:-}
+      QUALITY_OIDC_USERINFO_URL: ${QUALITY_OIDC_USERINFO_URL:-}
       QUALITY_DATABASE_URL: ${QUALITY_DATABASE_URL:-postgresql+psycopg://quality:quality-local-only@postgres:5432/quality_case}
       QUALITY_REDIS_URL: ${QUALITY_REDIS_URL:-redis://redis:6379/0}
       QUALITY_MINIO_ENDPOINT: ${QUALITY_MINIO_ENDPOINT:-minio:9000}

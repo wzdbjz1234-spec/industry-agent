@@ -11,6 +11,7 @@ from quality_case_agent.application.ports.qms import (
     QmsPermanentError,
     QmsTransientError,
 )
+from quality_case_agent.application.qms.modes import QmsMode, QmsModePolicy
 from quality_case_agent.contracts.investigation import ProposalContract
 from quality_case_agent.contracts.qms import QmsCreateTaskRequestContract, QmsTaskContract
 
@@ -24,9 +25,13 @@ class HttpQmsClient:
         *,
         timeout: float = 5.0,
         client: httpx.Client | None = None,
+        mode: QmsMode = "SANDBOX",
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._client = client or httpx.Client(timeout=timeout)
+        self._mode = QmsModePolicy.validate(mode)
+        if not QmsModePolicy.allows_external_write(self._mode):
+            raise ValueError("HttpQmsClient cannot be configured for SHADOW mode")
 
     def create_task(self, proposal: ProposalContract) -> QmsTaskContract:
         request = QmsCreateTaskRequestContract(
@@ -39,7 +44,12 @@ class HttpQmsClient:
             priority=proposal.priority,
             risk_level=proposal.risk_level,
         )
-        response = self._request("POST", "/api/v1/tasks", json=request.model_dump(mode="json"))
+        response = self._request(
+            "POST",
+            "/api/v1/tasks",
+            json=request.model_dump(mode="json"),
+            headers={"Idempotency-Key": proposal.proposal_id},
+        )
         return QmsTaskContract.model_validate(response)
 
     def get_task_by_proposal(self, proposal_id: str) -> QmsTaskContract | None:

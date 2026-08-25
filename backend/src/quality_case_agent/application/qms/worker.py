@@ -120,6 +120,10 @@ class QmsIntegrationWorker:
     def retry_audit(self) -> tuple[RetryAuditRecord, ...]:
         return tuple(self._retry_audit)
 
+    @property
+    def mode(self) -> str:
+        return self._service.mode
+
     def pending(self) -> Sequence[QmsDeliveryRecord]:
         return self._delivery_store.list_pending(self._consumer_group)
 

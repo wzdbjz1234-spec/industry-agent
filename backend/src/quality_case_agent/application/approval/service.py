@@ -2,6 +2,8 @@
 
 from uuid import NAMESPACE_URL, uuid5
 
+from quality_case_agent.application.audit.service import AuditService
+from quality_case_agent.application.identity.policy import system_identity
 from quality_case_agent.application.ports.approval import ProposalStore
 from quality_case_agent.application.ports.investigation import ReanalysisRequester
 from quality_case_agent.application.ports.quality_case import QualityCaseStore
@@ -22,10 +24,12 @@ class ProposalApprovalService:
         proposals: ProposalStore,
         cases: QualityCaseStore,
         reanalysis: ReanalysisRequester | None = None,
+        audit: AuditService | None = None,
     ) -> None:
         self._proposals = proposals
         self._cases = cases
         self._reanalysis = reanalysis
+        self._audit = audit
 
     def register_output(self, output: InvestigationOutputContract) -> ProposalContract:
         proposal = self._proposals.save_output(output)
@@ -43,6 +47,17 @@ class ProposalApprovalService:
                 case_id=proposal.case_id,
             )
         )
+        if self._audit is not None:
+            self._audit.record(
+                system_identity("system:investigation-agent", role="QUALITY_ENGINEER", organization="agent"),
+                event_type="quality.proposal.created.audit.v1",
+                action="CREATE",
+                resource_type="proposal",
+                resource_id=proposal.proposal_id,
+                correlation_id=proposal.analysis_run_id,
+                trace_id=proposal.analysis_run_id,
+                metadata={"case_id": proposal.case_id, "version": proposal.version},
+            )
         return proposal
 
     def decide(self, decision: ProposalDecisionContract) -> ApprovalEventContract:

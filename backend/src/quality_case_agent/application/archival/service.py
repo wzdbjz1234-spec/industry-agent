@@ -191,14 +191,24 @@ class CaseClosureService:
         self._qms = qms
 
     def process(
-        self, result: QmsTaskResultContract, signature: str
+        self,
+        result: QmsTaskResultContract,
+        signature: str,
+        *,
+        timestamp: str | None = None,
+        nonce: str | None = None,
     ) -> CaseClosureOutcome:
         task = self._qms.get_task(result.task_id)
         if task is None:
             raise KeyError(f"QMS task not found: {result.task_id}")
         if task.case_id != result.case_id:
             raise ValueError("QMS task does not belong to the submitted Case")
-        confirmation = self._webhook.process(result, signature)
+        confirmation = self._webhook.process(
+            result,
+            signature,
+            timestamp=timestamp,
+            nonce=nonce,
+        )
         case = self._cases.get_case(result.case_id)
         if case is None:
             raise KeyError(f"case not found: {result.case_id}")

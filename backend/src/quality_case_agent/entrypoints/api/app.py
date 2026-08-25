@@ -16,11 +16,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 
 from quality_case_agent.adapters.embeddings.deterministic import DeterministicEmbeddingProvider
+from quality_case_agent.adapters.identity.oidc import OidcIdentityAdapter
 from quality_case_agent.adapters.in_memory.approval import InMemoryProposalStore
 from quality_case_agent.adapters.in_memory.archive import (
     InMemoryCaseArchiveStore,
     InMemoryVerifiedCaseIndex,
 )
+from quality_case_agent.adapters.in_memory.audit import InMemoryAuditLog
 from quality_case_agent.adapters.in_memory.investigation import (
     InMemoryAnalysisRunStore,
     InMemoryInvestigationEventPublisher,
@@ -38,13 +40,21 @@ from quality_case_agent.adapters.llm.deepseek import DeepSeekInvestigationLLM
 from quality_case_agent.adapters.llm.deterministic import DeterministicInvestigationLLM
 from quality_case_agent.adapters.observability.otel import OtelTelemetry
 from quality_case_agent.adapters.observability.prometheus import PrometheusMetrics
+from quality_case_agent.adapters.postgres.audit import SqlAlchemyAuditLog
+from quality_case_agent.adapters.qms.http import HttpQmsClient
 from quality_case_agent.adapters.qms.mock import MockQmsAdapter
 from quality_case_agent.adapters.vision.efficientad import EfficientADImagePipelineAdapter
 from quality_case_agent.application.approval.service import ProposalApprovalService
 from quality_case_agent.application.archival.service import CaseArchiveService, CaseClosureService
+from quality_case_agent.application.audit.service import AuditService
 from quality_case_agent.application.case_detection.service import QualityCaseDetectionService
 from quality_case_agent.application.evaluation.roi import calculate_roi
 from quality_case_agent.application.evaluation.runner import EvaluationRunner
+from quality_case_agent.application.identity.policy import (
+    AuthorizationDenied,
+    HeaderIdentityProvider,
+    IdentityPolicy,
+)
 from quality_case_agent.application.ingestion.service import InspectionIngestionService
 from quality_case_agent.application.investigation.agent import AgentLimits, InvestigationAgent
 from quality_case_agent.application.investigation.service import InvestigationService
@@ -57,12 +67,18 @@ from quality_case_agent.application.observability.service import (
     CaseEventTimelineProjection,
     WorkerMetricsRegistry,
 )
+from quality_case_agent.application.ports.audit import AuditLog
+from quality_case_agent.application.ports.identity import (
+    IdentityAuthenticationError,
+    IdentityProvider,
+)
 from quality_case_agent.application.ports.inspection import InspectionResultStore
 from quality_case_agent.application.ports.investigation import AnalysisRunStore
 from quality_case_agent.application.ports.metrics import QualityMetricsStore
 from quality_case_agent.application.ports.monitoring import MonitoringBaselineStore
-from quality_case_agent.application.ports.qms import QmsDeliveryRecord
+from quality_case_agent.application.ports.qms import QmsClient, QmsDeliveryRecord
 from quality_case_agent.application.ports.quality_case import QualityCaseStore
+from quality_case_agent.application.qms.modes import ShadowQmsAdapter
 from quality_case_agent.application.qms.service import QmsIntegrationService, QmsWebhookService
 from quality_case_agent.application.qms.worker import QmsIntegrationWorker
 from quality_case_agent.application.vision import (
@@ -83,6 +99,7 @@ from quality_case_agent.contracts.evaluation import (
     EvaluationReportContract,
     ROICalculationRequestContract,
 )
+from quality_case_agent.contracts.identity import IdentityContract
 from quality_case_agent.contracts.investigation import InvestigationOutputContract
 from quality_case_agent.contracts.knowledge import (
     KnowledgeDocumentContract,
@@ -124,7 +141,7 @@ class ApplicationContainer:
     metrics: QualityMetricsStore
     monitoring: MonitoringService
     knowledge_base: InMemoryKnowledgeBase
-    qms: MockQmsAdapter
+    qms: QmsClient
     qms_delivery: InMemoryQmsDeliveryStore
     qms_worker: QmsIntegrationWorker
     archive_store: InMemoryCaseArchiveStore
@@ -142,6 +159,10 @@ class ApplicationContainer:
     vision_worker: VisionStreamWorker
     llm_provider: str
     llm_model: str
+    identity_provider: IdentityProvider
+    identity_policy: IdentityPolicy
+    audit: AuditService
+    audit_log: AuditLog
 
 
 def _investigation_llm() -> DeterministicInvestigationLLM | DeepSeekInvestigationLLM:
@@ -205,12 +226,32 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
         analysis_metrics=analysis_metrics,
     )
     proposals = InMemoryProposalStore()
-    approval = ProposalApprovalService(proposals, cases, investigation)
+    audit_log: AuditLog = (
+        SqlAlchemyAuditLog(resources.database)
+        if settings.mode == "production"
+        else InMemoryAuditLog()
+    )
+    audit = AuditService(audit_log)
+    oidc_url = os.getenv("QUALITY_OIDC_USERINFO_URL")
+    identity_provider: IdentityProvider = (
+        OidcIdentityAdapter(oidc_url)
+        if oidc_url
+        else HeaderIdentityProvider(required=settings.mode == "production")
+    )
+    identity_policy = IdentityPolicy()
+    approval = ProposalApprovalService(proposals, cases, investigation, audit=audit)
     investigation.set_proposal_registrar(approval.register_output)
-    qms = MockQmsAdapter()
+    if settings.qms_mode == "SHADOW":
+        qms: QmsClient = ShadowQmsAdapter()
+    elif settings.mode == "production":
+        if not settings.qms_base_url:
+            raise ValueError("QUALITY_QMS_BASE_URL is required for non-shadow production QMS")
+        qms = HttpQmsClient(settings.qms_base_url, mode=settings.qms_mode)
+    else:
+        qms = MockQmsAdapter()
     qms_delivery = InMemoryQmsDeliveryStore()
     qms_worker = QmsIntegrationWorker(
-        QmsIntegrationService(proposals, cases, qms),
+        QmsIntegrationService(proposals, cases, qms, mode=settings.qms_mode),
         qms_delivery,
         metrics=worker_metrics,
     )
@@ -275,6 +316,10 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
         vision_worker=vision_worker,
         llm_provider=str(getattr(llm, "provider", "unknown")),
         llm_model=str(getattr(llm, "model", "unknown")),
+        identity_provider=identity_provider,
+        identity_policy=identity_policy,
+        audit=audit,
+        audit_log=audit_log,
     )
 
 
@@ -367,6 +412,36 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
             if record.result is not None:
                 container.timeline.record(record.result, source="qms-integration-worker")
 
+    def authenticated(request: Request, action: str) -> IdentityContract:
+        try:
+            identity = container.identity_provider.authenticate(request.headers)
+            container.identity_policy.authorize(identity, action)
+            return identity
+        except IdentityAuthenticationError as exc:
+            raise HTTPException(status_code=401, detail=str(exc)) from exc
+        except AuthorizationDenied as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+
+    @app.get("/api/v1/identity/me")
+    def identity_me(request: Request) -> dict[str, object]:
+        identity = authenticated(request, "proposal.read")
+        return identity.model_dump(mode="json")
+
+    @app.get("/api/v1/qms/status")
+    def qms_status(request: Request) -> dict[str, object]:
+        authenticated(request, "qms.shadow")
+        return {"mode": container.qms_worker.mode, "external_write_enabled": container.qms_worker.mode != "SHADOW"}
+
+    @app.get("/api/v1/audit/events")
+    def audit_events(request: Request, limit: int = Query(default=200, ge=1, le=1_000)) -> list[dict[str, object]]:
+        authenticated(request, "audit.read")
+        return [event.model_dump(mode="json") for event in container.audit_log.list_events(limit=limit)]
+
+    @app.get("/api/v1/audit/export")
+    def audit_export(request: Request) -> Response:
+        authenticated(request, "audit.export")
+        return Response(content=container.audit_log.export_jsonl(), media_type="application/x-ndjson")
+
     @app.get("/health")
     def health() -> dict[str, object]:
         return {
@@ -378,6 +453,7 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
                 else "configured-provider"
             ),
             "llm": {"provider": container.llm_provider, "model": container.llm_model},
+            "qms": {"mode": container.qms_worker.mode, "external_write_enabled": container.qms_worker.mode != "SHADOW"},
             "trace_id": "health-local",
             "vision_schemes": list(container.vision_registry.names()),
         }
@@ -509,16 +585,28 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
         )
 
     @app.get("/api/v1/proposals/pending")
-    def pending_proposals() -> list[object]:
+    def pending_proposals(request: Request) -> list[object]:
+        authenticated(request, "proposal.read")
         return list(container.proposals.list_pending())
 
     @app.post("/api/v1/proposals/{proposal_id}/decisions")
-    def decide_proposal(proposal_id: str, decision: ProposalDecisionContract) -> object:
+    def decide_proposal(request: Request, proposal_id: str, decision: ProposalDecisionContract) -> object:
+        identity = authenticated(request, "proposal.decide")
         if decision.proposal_id != proposal_id:
             raise HTTPException(status_code=422, detail="proposal_id does not match path")
         try:
             approval_event = container.approval.decide(decision)
             qms_event = container.qms_worker.handle(approval_event)
+            container.audit.record(
+                identity,
+                event_type="quality.proposal.decision.audit.v1",
+                action=decision.decision,
+                resource_type="proposal",
+                resource_id=proposal_id,
+                correlation_id=decision.decision_id,
+                causation_id=approval_event.event_id,
+                metadata={"comment": decision.comment, "approved_proposal_id": approval_event.approved_proposal_id},
+            )
             return {"approval_event": approval_event, "qms_task_event": qms_event}
         except KeyError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
@@ -654,22 +742,44 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
     def qms_task_result(
         result: QmsTaskResultContract,
         x_qms_signature: str = Header(alias="X-QMS-Signature"),
+        x_qms_timestamp: str | None = Header(default=None, alias="X-QMS-Timestamp"),
+        x_qms_nonce: str | None = Header(default=None, alias="X-QMS-Nonce"),
     ) -> dict[str, object]:
         try:
-            outcome = container.closure.process(result, x_qms_signature)
+            outcome = container.closure.process(
+                result,
+                x_qms_signature,
+                timestamp=x_qms_timestamp,
+                nonce=x_qms_nonce,
+            )
         except KeyError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         container.timeline.record(outcome.confirmation, source="qms-webhook")
         container.timeline.record(outcome.archived, source="case-archive")
+        webhook_identity = HeaderIdentityProvider(
+            default_actor_id="system:qms-webhook",
+            default_role="OPERATOR",
+            default_organization="qms",
+        ).authenticate({})
+        container.audit.record(
+            webhook_identity,
+            event_type="qms.task.result.audit.v1",
+            action="WEBHOOK_ACCEPTED",
+            resource_type="qms_task",
+            resource_id=result.task_id,
+            correlation_id=result.event_id,
+            metadata={"confirmation_id": result.confirmation_id, "signature": x_qms_signature},
+        )
         return {
             "confirmation_event": outcome.confirmation,
             "archive_event": outcome.archived,
         }
 
     @app.get("/api/v1/qms/tasks")
-    def qms_tasks() -> dict[str, list[object]]:
+    def qms_tasks(request: Request) -> dict[str, list[object]]:
+        authenticated(request, "qms.shadow")
         return {"items": list(container.qms.list_tasks())}
 
     @app.get("/api/v1/qms/delivery")
@@ -703,9 +813,20 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
 
     @app.post("/api/v1/qms/retry-pending")
     def retry_qms_pending(
+        request: Request,
         x_operator_id: str = Header(default="system", alias="X-Operator-Id"),
     ) -> list[object]:
-        result: list[object] = list(container.qms_worker.retry_pending(x_operator_id))
+        identity = authenticated(request, "qms.retry")
+        result: list[object] = list(container.qms_worker.retry_pending(identity.actor_id))
+        container.audit.record(
+            identity,
+            event_type="qms.delivery.retry.audit.v1",
+            action="RETRY_PENDING",
+            resource_type="qms_delivery",
+            resource_id="pending",
+            correlation_id=f"retry-pending:{identity.actor_id}",
+            metadata={"requested_operator_id": x_operator_id},
+        )
         sync_timeline()
         return result
 
@@ -778,21 +899,43 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
 
     @app.post("/api/v1/operations/retry-pending")
     def operations_retry_pending(
+        request: Request,
         x_operator_id: str = Header(default="system", alias="X-Operator-Id"),
     ) -> list[object]:
-        result: list[object] = list(container.qms_worker.retry_pending(x_operator_id))
+        identity = authenticated(request, "qms.retry")
+        result: list[object] = list(container.qms_worker.retry_pending(identity.actor_id))
+        container.audit.record(
+            identity,
+            event_type="qms.delivery.retry.audit.v1",
+            action="RETRY_PENDING",
+            resource_type="qms_delivery",
+            resource_id="pending",
+            correlation_id=f"retry-pending:{identity.actor_id}",
+            metadata={"requested_operator_id": x_operator_id},
+        )
         sync_timeline()
         return result
 
     @app.post("/api/v1/operations/retry-dlq/{event_id}")
     def operations_retry_dlq(
+        request: Request,
         event_id: str,
         x_operator_id: str | None = Header(default=None, alias="X-Operator-Id"),
     ) -> object:
         if not x_operator_id or not x_operator_id.strip():
             raise HTTPException(status_code=403, detail="X-Operator-Id is required")
         try:
-            result = container.qms_worker.retry_dlq(event_id, operator_id=x_operator_id.strip())
+            identity = authenticated(request, "qms.retry")
+            result = container.qms_worker.retry_dlq(event_id, operator_id=identity.actor_id)
+            container.audit.record(
+                identity,
+                event_type="qms.delivery.retry.audit.v1",
+                action="RETRY_DLQ",
+                resource_type="qms_delivery",
+                resource_id=event_id,
+                correlation_id=f"retry-dlq:{event_id}:{identity.actor_id}",
+                metadata={"requested_operator_id": x_operator_id},
+            )
         except KeyError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         except ValueError as exc:

@@ -175,6 +175,32 @@ export type QmsTask = {
   task_uri: string;
 };
 
+export type Identity = {
+  actor_id: string;
+  subject: string;
+  roles: string[];
+  organization: string;
+  auth_source: string;
+  claims_digest: string;
+  issued_at: string;
+  expires_at: string;
+};
+
+export type AuditEvent = {
+  event_id: string;
+  event_type: string;
+  occurred_at: string;
+  actor_id: string;
+  roles: string[];
+  organization: string;
+  action: string;
+  resource_type: string;
+  resource_id: string;
+  correlation_id: string;
+  event_hash: string;
+  previous_hash?: string | null;
+};
+
 export type QualityCase = {
   case_id: string;
   case_status: string;
@@ -244,6 +270,9 @@ export const api = {
   cases: () => request<QualityCase[]>("/cases"),
   caseLibrary: () => request<VerifiedCase[]>("/case-library"),
   qmsTasks: () => request<{ items: QmsTask[] }>("/qms/tasks"),
+  qmsStatus: () => request<{ mode: "SHADOW" | "SANDBOX" | "PRODUCTION"; external_write_enabled: boolean }>("/qms/status"),
+  identityMe: () => request<Identity>("/identity/me"),
+  auditEvents: (limit = 200) => request<AuditEvent[]>(`/audit/events?limit=${limit}`),
   seedDemo: () => request<Record<string, unknown>>("/demo/fixture-offset", { method: "POST" }),
   seedRepeatDemo: () => request<Record<string, unknown>>("/demo/fixture-offset/repeat", { method: "POST" }),
   seedIlluminationDemo: () => request<Record<string, unknown>>("/demo/illumination-drift", { method: "POST" }),

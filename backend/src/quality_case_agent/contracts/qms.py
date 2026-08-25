@@ -27,7 +27,7 @@ class QmsTaskContract(ContractModel):
     task_id: str = Field(min_length=1, max_length=128)
     case_id: str
     proposal_id: str
-    external_system: Literal["MOCK_QMS"] = "MOCK_QMS"
+    external_system: Literal["MOCK_QMS", "SHADOW_QMS", "SANDBOX_QMS", "PRODUCTION_QMS"] = "MOCK_QMS"
     status: Literal["OPEN", "IN_PROGRESS", "CLOSED"] = "OPEN"
     assignee_role: str = Field(min_length=1, max_length=128)
     created_by: str = Field(min_length=1, max_length=128)

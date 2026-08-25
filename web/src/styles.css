@@ -59,6 +59,7 @@ a { color: inherit; }
 .page-heading p { margin: 0 0 2px; color: #8a969d; font-size: 9px; text-transform: uppercase; letter-spacing: .04em; }
 .page-heading h1 { margin: 0; color: #1a2b33; font-size: 17px; letter-spacing: -.02em; }
 .top-actions { display: flex; align-items: center; gap: 9px; }
+.identity-badge { display: inline-flex; align-items: center; gap: 5px; padding: 6px 8px; color: #24776f; background: #e8f5f2; border: 1px solid #c7e8e2; border-radius: 6px; font-size: 9px; font-weight: 700; }
 .quick-search { width: 235px; height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: #859198; background: #f5f7f8; border: 1px solid #e3e8ea; border-radius: 8px; font-size: 10px; }
 .quick-search span { flex: 1; }
 .quick-search kbd { padding: 2px 5px; color: #8b969c; background: #fff; border: 1px solid #dfe5e7; border-radius: 4px; font-size: 8px; }
