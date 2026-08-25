@@ -1,0 +1,23 @@
+groups:
+  - name: quality-case-agent
+    rules:
+      - alert: QualityCaseWorkerBacklog
+        expr: stream_backlog_count > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "质量事件消费积压超过 100 条"
+      - alert: QualityCaseWorkerDlq
+        expr: increase(worker_events_total{status="DLQ"}[10m]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "质量事件进入 DLQ，需要人工处理"
+      - alert: QualityCaseAnalysisAbstention
+        expr: rate(analysis_abstention_total[15m]) > 0.2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent 证据不足/预算耗尽比例升高"

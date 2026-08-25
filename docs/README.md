@@ -1,5 +1,13 @@
 # Quality Case Investigation Agent
 
+分阶段生产化与试点修改建议见 [Quality Case Investigation Agent 分阶段优化路线](quality_case_agent_optimization_roadmap.md)。文档从现有 Phase 00–15 继续规划 Phase 16–22，覆盖真实持久化、可靠事件流、可观测性、模型监控、通用调查、真实 QMS 影子接入和量化发布门禁。
+
+Phase 16–18 的实际开发日志：
+
+- [Phase 16 持久化](development-log/2026-08-25-phase-16-persistence.md)
+- [Phase 17 事件流](development-log/2026-08-25-phase-17-eventing.md)
+- [Phase 18 可观测性](development-log/2026-08-25-phase-18-observability.md)
+
 这是一个可审计、有人类授权边界的事件驱动工业质量调查 Agent。核心答案是：检测系统持续产生事实，普通程序聚合成 Quality Case，受控单 Agent 围绕冻结 Snapshot 调用只读工具形成 Evidence/Proposal，人工批准后才触发 QMS，验证结果再沉淀为可信组织知识。
 
 ## 先启动、再验收
@@ -65,7 +73,7 @@ DeepSeek Adapter 使用 OpenAI 兼容的 `/chat/completions` JSON 输出模式�
 
 当前已完成阶段 00–14 的离线垂直切片：知识文档入库/检索、Case 调查 Agent、Analysis Run、Proposal
 人工审批、QMS Worker/Mock QMS 任务闭环、人工结论归档/可信案例索引及 FastAPI 本地入口。真实 PostgreSQL/Redis/MinIO 仍通过 Port
-保留替换边界。
+保留替换边界。Phase 16–18 已补充 SQLAlchemy/psycopg、Redis Streams、MinIO、OpenTelemetry 和 Prometheus 适配器；本地可用 SQLite + InMemory，生产通过 `QUALITY_RUNTIME_MODE=production` 和显式资源 URL 装配，API 的 `/metrics` 可直接被 Prometheus 抓取。
 
 ## 阶段 5–7 演示
 

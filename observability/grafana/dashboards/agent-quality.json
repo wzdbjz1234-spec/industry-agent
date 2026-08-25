@@ -1,0 +1,9 @@
+{
+  "title": "Agent Quality",
+  "schemaVersion": 39,
+  "panels": [
+    {"type": "timeseries", "title": "Analysis duration p95", "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(analysis_duration_seconds_bucket[10m])))"}]},
+    {"type": "timeseries", "title": "Analysis outcomes", "targets": [{"expr": "sum by (status) (rate(analysis_runs_total[10m]))"}]},
+    {"type": "timeseries", "title": "Estimated cost CNY", "targets": [{"expr": "rate(analysis_cost_cny_total[10m])"}]}
+  ]
+}

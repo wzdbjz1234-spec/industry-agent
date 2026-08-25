@@ -18,3 +18,7 @@ class QualityCaseStore(Protocol):
 
     def get_case(self, case_id: str) -> QualityCase | None:
         """Read one case for controlled investigation tools."""
+
+    @property
+    def events(self) -> Sequence[QualityCaseEvent]:
+        """Return idempotently persisted case lifecycle events."""

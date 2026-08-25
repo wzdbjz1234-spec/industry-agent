@@ -1,0 +1,10 @@
+{
+  "title": "Quality Case Operations",
+  "schemaVersion": 39,
+  "panels": [
+    {"type": "timeseries", "title": "Worker events", "targets": [{"expr": "sum by (worker,status) (rate(worker_events_total[5m]))"}]},
+    {"type": "timeseries", "title": "Stream backlog", "targets": [{"expr": "stream_backlog_count"}]},
+    {"type": "timeseries", "title": "Oldest pending age", "targets": [{"expr": "stream_oldest_pending_age_seconds"}]},
+    {"type": "stat", "title": "DLQ events (10m)", "targets": [{"expr": "sum(increase(worker_events_total{status=\"DLQ\"}[10m]))"}]}
+  ]
+}

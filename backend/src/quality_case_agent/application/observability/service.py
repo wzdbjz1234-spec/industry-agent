@@ -161,8 +161,9 @@ class _WorkerCounter:
 class WorkerMetricsRegistry:
     """Low-cardinality worker counters suitable for an operations endpoint."""
 
-    def __init__(self) -> None:
+    def __init__(self, exporter: object | None = None) -> None:
         self._workers: dict[str, _WorkerCounter] = {}
+        self._exporter = exporter
 
     def observe(
         self,
@@ -194,6 +195,14 @@ class WorkerMetricsRegistry:
             counter.last_error_type = error_type or "RuntimeError"
             counter.last_error_category = error_category or "SYSTEM_FAILURE"
             counter.last_error = redact_error(error)
+        record_worker = getattr(self._exporter, "record_worker", None)
+        if callable(record_worker):
+            record_worker(
+                worker,
+                status=status,
+                duration_ms=duration_ms,
+                error_category=error_category or ("NONE" if not error else "SYSTEM_FAILURE"),
+            )
 
     def snapshot(self) -> list[dict[str, object]]:
         result: list[dict[str, object]] = []
@@ -227,8 +236,11 @@ class WorkerMetricsRegistry:
 class AnalysisMetricsRegistry:
     """Structured analysis cost/tool metrics, without model chain-of-thought."""
 
-    def __init__(self) -> None:
+    def __init__(self, exporter: object | None = None, *, provider: str = "unknown", model: str = "unknown") -> None:
         self._records: dict[str, dict[str, object]] = {}
+        self._exporter = exporter
+        self._provider = provider
+        self._model = model
 
     def record(
         self,
@@ -252,6 +264,18 @@ class AnalysisMetricsRegistry:
             "estimated_tokens": estimated_tokens,
             "estimated_cost_cny": round(estimated_cost_cny, 6),
         }
+        record_analysis = getattr(self._exporter, "record_analysis", None)
+        if callable(record_analysis):
+            record_analysis(
+                status=status,
+                provider=self._provider,
+                model=self._model,
+                duration_ms=duration_ms,
+                tool_call_count=tool_call_count,
+                retrieval_call_count=retrieval_call_count,
+                estimated_tokens=estimated_tokens,
+                estimated_cost_cny=estimated_cost_cny,
+            )
 
     def list(self) -> list[dict[str, object]]:
         return [self._records[key] for key in sorted(self._records)]

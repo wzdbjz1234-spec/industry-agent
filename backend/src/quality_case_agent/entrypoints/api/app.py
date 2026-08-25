@@ -13,7 +13,7 @@ from pathlib import Path
 from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from quality_case_agent.adapters.embeddings.deterministic import DeterministicEmbeddingProvider
 from quality_case_agent.adapters.in_memory.approval import InMemoryProposalStore
@@ -35,6 +35,8 @@ from quality_case_agent.adapters.in_memory.stores import (
 from quality_case_agent.adapters.knowledge.parsing import MarkdownDocumentParser, PdfDocumentParser
 from quality_case_agent.adapters.llm.deepseek import DeepSeekInvestigationLLM
 from quality_case_agent.adapters.llm.deterministic import DeterministicInvestigationLLM
+from quality_case_agent.adapters.observability.otel import OtelTelemetry
+from quality_case_agent.adapters.observability.prometheus import PrometheusMetrics
 from quality_case_agent.adapters.qms.mock import MockQmsAdapter
 from quality_case_agent.adapters.vision.efficientad import EfficientADImagePipelineAdapter
 from quality_case_agent.application.approval.service import ProposalApprovalService
@@ -53,7 +55,11 @@ from quality_case_agent.application.observability.service import (
     CaseEventTimelineProjection,
     WorkerMetricsRegistry,
 )
+from quality_case_agent.application.ports.inspection import InspectionResultStore
+from quality_case_agent.application.ports.investigation import AnalysisRunStore
+from quality_case_agent.application.ports.metrics import QualityMetricsStore
 from quality_case_agent.application.ports.qms import QmsDeliveryRecord
+from quality_case_agent.application.ports.quality_case import QualityCaseStore
 from quality_case_agent.application.qms.service import QmsIntegrationService, QmsWebhookService
 from quality_case_agent.application.qms.worker import QmsIntegrationWorker
 from quality_case_agent.application.vision import (
@@ -66,6 +72,8 @@ from quality_case_agent.application.vision import (
     VisionStreamWorker,
 )
 from quality_case_agent.application.vision.stream import VisionQueueFullError
+from quality_case_agent.bootstrap import build_persistent_resources
+from quality_case_agent.config import RuntimeSettings
 from quality_case_agent.contracts.approval import ProposalDecisionContract
 from quality_case_agent.contracts.evaluation import (
     EvaluationConfigContract,
@@ -102,11 +110,11 @@ class ApplicationContainer:
     proposals: InMemoryProposalStore
     approval: ProposalApprovalService
     investigations: InvestigationService
-    runs: InMemoryAnalysisRunStore
-    cases: InMemoryQualityCaseStore
+    runs: AnalysisRunStore
+    cases: QualityCaseStore
     events: InMemoryInvestigationEventPublisher
-    inspection: InMemoryInspectionStore
-    metrics: InMemoryMetricsStore
+    inspection: InspectionResultStore
+    metrics: QualityMetricsStore
     knowledge_base: InMemoryKnowledgeBase
     qms: MockQmsAdapter
     qms_delivery: InMemoryQmsDeliveryStore
@@ -117,6 +125,8 @@ class ApplicationContainer:
     timeline: CaseEventTimelineProjection
     worker_metrics: WorkerMetricsRegistry
     analysis_metrics: AnalysisMetricsRegistry
+    prometheus_metrics: PrometheusMetrics
+    telemetry: OtelTelemetry
     evaluation_reports: list[EvaluationReportContract]
     vision_events: InMemoryVisionEventStore
     vision_registry: VisionSchemeRegistry
@@ -138,20 +148,38 @@ def _investigation_llm() -> DeterministicInvestigationLLM | DeepSeekInvestigatio
 
 
 def build_demo_container(*, agent_limits: AgentLimits | None = None) -> ApplicationContainer:
-    """Compose replaceable adapters for local API and browser demos."""
+    """Compose adapters; production mode selects durable core stores explicitly."""
 
-    inspection = InMemoryInspectionStore()
-    metrics = InMemoryMetricsStore()
-    cases = InMemoryQualityCaseStore()
+    settings = RuntimeSettings.from_env()
+    inspection: InspectionResultStore
+    metrics: QualityMetricsStore
+    cases: QualityCaseStore
+    runs: AnalysisRunStore
+    if settings.mode == "production":
+        resources = build_persistent_resources(settings)
+        inspection = resources.inspection
+        metrics = resources.metrics
+        cases = resources.cases
+        runs = resources.runs
+    else:
+        inspection = InMemoryInspectionStore()
+        metrics = InMemoryMetricsStore()
+        cases = InMemoryQualityCaseStore()
+        runs = InMemoryAnalysisRunStore()
     knowledge_base = InMemoryKnowledgeBase(DeterministicEmbeddingProvider())
     knowledge = KnowledgeService(knowledge_base)
     _seed_demo_knowledge(knowledge_base)
-    runs = InMemoryAnalysisRunStore()
     event_publisher = InMemoryInvestigationEventPublisher()
-    worker_metrics = WorkerMetricsRegistry()
-    analysis_metrics = AnalysisMetricsRegistry()
-    tools = ReadOnlyInvestigationTools(cases, metrics, knowledge_base, inspection)
     llm = _investigation_llm()
+    prometheus_metrics = PrometheusMetrics()
+    telemetry = OtelTelemetry()
+    worker_metrics = WorkerMetricsRegistry(prometheus_metrics)
+    analysis_metrics = AnalysisMetricsRegistry(
+        prometheus_metrics,
+        provider=str(getattr(llm, "provider", "unknown")),
+        model=str(getattr(llm, "model", "unknown")),
+    )
+    tools = ReadOnlyInvestigationTools(cases, metrics, knowledge_base, inspection)
     investigation = InvestigationService(
         InvestigationAgent(llm, tools, limits=agent_limits),
         runs,
@@ -183,11 +211,13 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
     )
 
     def refresh_vision_case_pipeline(_batch: object) -> None:
-        MetricsWorker(inspection, metrics).run(window_minutes=(1, 5))
-        detection = QualityCaseDetectionService(metrics, cases).run()
-        for event in detection.events:
-            if event.event_type == "quality.case.opened.v1":
-                investigation.handle_case_opened(event)
+        with telemetry.operation("quality.case.pipeline", attributes={"source": "vision"}) as operation:
+            MetricsWorker(inspection, metrics).run(window_minutes=(1, 5))
+            detection = QualityCaseDetectionService(metrics, cases).run()
+            for event in detection.events:
+                if event.event_type == "quality.case.opened.v1":
+                    investigation.handle_case_opened(event)
+            operation.succeed(case_count=len(detection.opened_cases))
 
     vision_events = InMemoryVisionEventStore()
     vision_registry = VisionSchemeRegistry()
@@ -219,6 +249,8 @@ def build_demo_container(*, agent_limits: AgentLimits | None = None) -> Applicat
         timeline=CaseEventTimelineProjection(),
         worker_metrics=worker_metrics,
         analysis_metrics=analysis_metrics,
+        prometheus_metrics=prometheus_metrics,
+        telemetry=telemetry,
         evaluation_reports=[],
         vision_events=vision_events,
         vision_registry=vision_registry,
@@ -684,6 +716,15 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
             "qms_dlq": len(container.qms_worker.dlq()),
             "qms_processed": len(container.qms_worker.processed()),
         }
+
+    @app.get("/metrics")
+    def metrics_endpoint() -> Response:
+        """Prometheus scrape endpoint with no case/document high-cardinality labels."""
+
+        return Response(
+            content=container.prometheus_metrics.render(),
+            media_type="text/plain; version=0.0.4; charset=utf-8",
+        )
 
     @app.get("/api/v1/operations/delivery")
     def operations_delivery() -> dict[str, list[dict[str, object]]]:
