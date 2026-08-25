@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-The repository is currently design-first. Root Markdown files define the product, architecture, message contracts, and implementation sequence; treat `quality_case_investigation_agent_design.md` and `quality_case_agent_development_plan.md` as the source of truth.
+The repository was originally design-first. Existing Markdown files still document the implemented Quality Case/QMS baseline, but new product-simplification work must treat `quality_investigation_copilot_development_plan.md` as the execution source of truth. Use `quality_case_investigation_agent_design.md`, `quality_case_agent_development_plan.md`, and `quality_case_agent_optimization_roadmap.md` as historical architecture and migration context; do not extend the legacy Proposal/QMS main flow unless the new plan explicitly calls for it.
 
 `efficientad-package/` is the existing detector package. Its source lives under `efficientad-package/src/efficientad/`, tests belong in `efficientad-package/tests/`, and model/data artifacts are under `output/`, `data/`, `templates/`, and `resources/`. The planned application will add `backend/`, `web/`, `simulator/`, `contracts/`, and `docs/`; follow the package boundaries documented in the development plan.
 

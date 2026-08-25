@@ -1,5 +1,7 @@
 # Quality Case Investigation Agent
 
+新的产品收敛与重构主计划见 [Quality Investigation Copilot 简化重构开发计划](quality_investigation_copilot_development_plan.md)。该计划将主流程简化为“只读工具调查 → 自然语言 RCA 报告 → 人工确认/修改 → 归档”，并把 Proposal/QMS 闭环降为历史实现或未来可选集成。
+
 分阶段生产化与试点修改建议见 [Quality Case Investigation Agent 分阶段优化路线](quality_case_agent_optimization_roadmap.md)。文档从现有 Phase 00–15 继续规划 Phase 16–22，覆盖真实持久化、可靠事件流、可观测性、模型监控、通用调查、真实 QMS 影子接入和量化发布门禁。
 
 Phase 16–18 的实际开发日志：
@@ -9,6 +11,7 @@ Phase 16–18 的实际开发日志：
 - [Phase 18 可观测性](development-log/2026-08-25-phase-18-observability.md)
 - [Phase 19 模型与数据健康监控](development-log/2026-08-25-phase-19-monitoring.md)
 - [Phase 20 通用证据驱动调查](development-log/2026-08-25-phase-20-investigation.md)
+- [Phase 21 QMS 影子接入、身份与审计](development-log/2026-08-25-phase-21-qms-identity-audit.md)
 
 这是一个可审计、有人类授权边界的事件驱动工业质量调查 Agent。核心答案是：检测系统持续产生事实，普通程序聚合成 Quality Case，受控单 Agent 围绕冻结 Snapshot 调用只读工具形成 Evidence/Proposal，人工批准后才触发 QMS，验证结果再沉淀为可信组织知识。
 
