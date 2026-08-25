@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "runbook_id": "illumination-drift-investigation",
+  "version": "1.0",
+  "trigger_family": "ILLUMINATION_DRIFT",
+  "required_tools": ["get_case_snapshot", "compare_quality_metrics", "get_representative_samples", "search_knowledge_base"],
+  "knowledge_query": "光照 漂移 曝光 亮度 光源角度 增益 校准 illumination drift exposure brightness",
+  "candidate_hypotheses": [{
+    "hypothesis_id": "H-ILL-01",
+    "title": "光照或曝光状态发生漂移",
+    "description": "异常分数和NG率整体抬升，同时缺少单一缺陷区域聚集；与光源或相机参数漂移特征一致。",
+    "default_confidence": 0.72,
+    "missing_evidence": ["当前光照强度记录", "相机曝光参数和光源角度"]
+  }],
+  "proposal": {
+    "title": "检查光源、曝光与相机校准状态",
+    "reason": "当前分数整体抬升且缺少单一空间聚集，适用光照维护手册支持优先检查亮度、光源角度和曝光参数。",
+    "steps": [
+      {"order": 1, "instruction": "测量当前光源亮度并检查光源角度", "expected_evidence": "光照强度记录和光源角度"},
+      {"order": 2, "instruction": "核对相机曝光时间、增益和自动曝光状态", "expected_evidence": "相机曝光参数快照"},
+      {"order": 3, "instruction": "使用基准件执行光照/相机校准复测", "expected_evidence": "校准前后基准件分数和图像"}
+    ],
+    "requested_role": "QUALITY_ENGINEER",
+    "priority": "HIGH",
+    "risk_level": "LOW"
+  }
+}

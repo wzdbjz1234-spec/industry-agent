@@ -66,6 +66,12 @@ class InvestigationAnalysisContract(ContractModel):
     limitations: list[str] = Field(default_factory=list, max_length=20)
     required_information: list[str] = Field(default_factory=list, max_length=20)
     termination_reason: str = Field(min_length=1, max_length=512)
+    runbook_id: str | None = None
+    runbook_version: str | None = None
+    toolset_version: str | None = None
+    prompt_version: str | None = None
+    model_version: str | None = None
+    retrieval_index_version: str | None = None
 
 
 class AgentTraceEventContract(ContractModel):

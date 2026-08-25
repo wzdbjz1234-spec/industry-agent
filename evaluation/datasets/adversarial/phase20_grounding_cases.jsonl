@@ -1,0 +1,4 @@
+{"case":"historical_only","trigger_family":"FIXTURE_OFFSET","expected":"ABSTAIN","reason":"仅有C级历史案例，缺少当前A级事实"}
+{"case":"missing_applicability","trigger_family":"ILLUMINATION_DRIFT","expected":"ABSTAIN","reason":"有当前指标但没有适用B级维护依据"}
+{"case":"contradictory_evidence","trigger_family":"FIXTURE_OFFSET","expected":"ABSTAIN","reason":"当前A级事实与候选假设存在反向指标"}
+{"case":"valid_grounded_proposal","trigger_family":"FIXTURE_OFFSET","expected":"PROPOSE","reason":"A级当前事实与B级规范依据均存在"}

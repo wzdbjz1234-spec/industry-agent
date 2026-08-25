@@ -19,6 +19,7 @@ class LLMDecision:
     action: str
     arguments: dict[str, object] = field(default_factory=dict)
     summary: str = ""
+    draft: dict[str, object] | None = None
 
 
 @dataclass(frozen=True, slots=True)

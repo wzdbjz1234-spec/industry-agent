@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "runbook_id": "generic-investigation",
+  "version": "1.0",
+  "trigger_family": "DEFAULT",
+  "required_tools": ["get_case_snapshot", "compare_quality_metrics", "search_knowledge_base"],
+  "knowledge_query": "质量异常 排查步骤 工艺变化 检测模型",
+  "candidate_hypotheses": [{
+    "hypothesis_id": "H-GENERIC-01",
+    "title": "当前质量指标存在待验证的共同原因",
+    "description": "当前事实与指标偏移形成候选问题方向，但不能在缺少现场证据时确定根因。",
+    "default_confidence": 0.45,
+    "missing_evidence": ["现场参数快照", "复测结果"]
+  }],
+  "proposal": null
+}

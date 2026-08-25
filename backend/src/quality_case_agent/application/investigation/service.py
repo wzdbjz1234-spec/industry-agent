@@ -28,7 +28,7 @@ from quality_case_agent.contracts.quality_case import QualityCaseOpenedEventCont
 from quality_case_agent.domain.investigation.models import AnalysisRun
 from quality_case_agent.domain.quality_case.models import QualityCaseEvent
 
-from .agent import InvestigationAgent
+from .module import InvestigationModule, InvestigationRequest
 
 
 class InvestigationService:
@@ -36,7 +36,7 @@ class InvestigationService:
 
     def __init__(
         self,
-        agent: InvestigationAgent,
+        agent: InvestigationModule,
         runs: AnalysisRunStore,
         events: InvestigationEventPublisher,
         cases: QualityCaseStore | None = None,
@@ -135,7 +135,13 @@ class InvestigationService:
             )
         )
         try:
-            output = self._agent.analyze(case_id, snapshot_id, analysis_run_id=run_id)
+            output = self._agent.investigate(
+                InvestigationRequest(
+                    case_id=case_id,
+                    snapshot_id=snapshot_id,
+                    analysis_run_id=run_id,
+                )
+            )
         except Exception as exc:
             completed_at = datetime.now(UTC)
             run.status = "FAILED"

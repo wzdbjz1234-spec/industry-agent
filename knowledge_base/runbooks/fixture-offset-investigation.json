@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "runbook_id": "fixture-offset-investigation",
+  "version": "1.0",
+  "trigger_family": "FIXTURE_OFFSET",
+  "required_tools": ["get_case_snapshot", "compare_quality_metrics", "get_representative_samples", "search_knowledge_base"],
+  "knowledge_query": "夹具 定位销 偏移 检查步骤 fixture positioning pin offset inspection",
+  "candidate_hypotheses": [{
+    "hypothesis_id": "H-01",
+    "title": "夹具定位偏移或定位销状态异常",
+    "description": "NG样本在局部区域持续聚集，与夹具定位偏移的空间特征一致；仍需现场测量确认。",
+    "default_confidence": 0.86,
+    "missing_evidence": ["定位销间隙测量值", "基准件复测位置偏移量"]
+  }],
+  "proposal": {
+    "title": "检查camera-01工位夹具定位状态",
+    "reason": "当前Snapshot的区域聚集与适用夹具手册均支持优先检查定位销；历史案例仅作为C级经验，不作为根因证明。",
+    "steps": [
+      {"order": 1, "instruction": "测量定位销间隙", "expected_evidence": "定位销间隙测量值"},
+      {"order": 2, "instruction": "使用基准件复测工件位置", "expected_evidence": "基准件位置偏移量"},
+      {"order": 3, "instruction": "检查最近一次换线记录", "expected_evidence": "换线时间和操作记录"}
+    ],
+    "requested_role": "QUALITY_ENGINEER",
+    "priority": "HIGH",
+    "risk_level": "LOW"
+  }
+}

@@ -1,5 +1,9 @@
 """Allowlisted, read-only quality and knowledge tools."""
 
+from datetime import datetime
+
+from quality_case_agent.application.ports.change_log import ChangeLogPort
+from quality_case_agent.application.ports.equipment import EquipmentPort
 from quality_case_agent.application.ports.inspection import InspectionResultStore
 from quality_case_agent.application.ports.knowledge import KnowledgeBase
 from quality_case_agent.application.ports.metrics import QualityMetricsStore
@@ -18,11 +22,15 @@ class ReadOnlyInvestigationTools:
         metrics_store: QualityMetricsStore,
         knowledge_base: KnowledgeBase,
         inspection_store: InspectionResultStore | None = None,
+        equipment: EquipmentPort | None = None,
+        change_log: ChangeLogPort | None = None,
     ) -> None:
         self._case_store = case_store
         self._metrics_store = metrics_store
         self._knowledge_base = knowledge_base
         self._inspection_store = inspection_store
+        self._equipment = equipment
+        self._change_log = change_log
 
     @property
     def names(self) -> tuple[str, ...]:
@@ -30,6 +38,10 @@ class ReadOnlyInvestigationTools:
         names.append("check_data_quality")
         if self._inspection_store is not None:
             names.append("get_representative_samples")
+        if self._equipment is not None:
+            names.append("get_equipment_state")
+        if self._change_log is not None:
+            names.append("get_change_log")
         names.append("search_knowledge_base")
         return tuple(names)
 
@@ -45,6 +57,10 @@ class ReadOnlyInvestigationTools:
                 return self.check_data_quality(arguments)
             if name == "get_representative_samples":
                 return self.get_representative_samples(arguments)
+            if name == "get_equipment_state":
+                return self.get_equipment_state(arguments)
+            if name == "get_change_log":
+                return self.get_change_log(arguments)
             return self.search_knowledge_base(arguments)
         except (KeyError, TypeError, ValueError) as exc:
             return ToolObservation(name, False, f"参数或数据错误：{exc}", {})
@@ -231,6 +247,50 @@ class ReadOnlyInvestigationTools:
             f"返回 {len(items)} 个代表性样本",
             {"snapshot_id": snapshot_id, "items": items, "count": len(items)},
             tuple(f"sample:{item['sample_id']}" for item in items),
+        )
+
+    def get_equipment_state(self, arguments: dict[str, object]) -> ToolObservation:
+        if self._equipment is None:
+            raise ValueError("equipment adapter is not configured")
+        station_id = self._required_string(arguments, "station_id")
+        state = self._equipment.get_state(station_id)
+        return ToolObservation(
+            "get_equipment_state",
+            True,
+            "返回设备当前只读状态",
+            {
+                "station_id": state.station_id,
+                "observed_at": state.observed_at.isoformat(),
+                "state": state.state,
+                "attributes": dict(state.attributes),
+            },
+            (f"equipment:{station_id}:{state.observed_at.isoformat()}",),
+        )
+
+    def get_change_log(self, arguments: dict[str, object]) -> ToolObservation:
+        if self._change_log is None:
+            raise ValueError("change-log adapter is not configured")
+        station_id = self._required_string(arguments, "station_id")
+        since_raw = self._required_string(arguments, "since")
+        since = datetime.fromisoformat(since_raw)
+        records = self._change_log.list_recent(station_id, since)
+        items = [
+            {
+                "change_id": record.change_id,
+                "station_id": record.station_id,
+                "occurred_at": record.occurred_at.isoformat(),
+                "change_type": record.change_type,
+                "summary": record.summary,
+                "metadata": dict(record.metadata),
+            }
+            for record in records
+        ]
+        return ToolObservation(
+            "get_change_log",
+            True,
+            f"返回 {len(items)} 条只读变更记录",
+            {"station_id": station_id, "since": since.isoformat(), "items": items},
+            tuple(f"change:{item['change_id']}" for item in items),
         )
 
     def _case_for_snapshot(self, snapshot_id: str) -> QualityCase:

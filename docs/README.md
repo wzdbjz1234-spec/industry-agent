@@ -8,6 +8,7 @@ Phase 16–18 的实际开发日志：
 - [Phase 17 事件流](development-log/2026-08-25-phase-17-eventing.md)
 - [Phase 18 可观测性](development-log/2026-08-25-phase-18-observability.md)
 - [Phase 19 模型与数据健康监控](development-log/2026-08-25-phase-19-monitoring.md)
+- [Phase 20 通用证据驱动调查](development-log/2026-08-25-phase-20-investigation.md)
 
 这是一个可审计、有人类授权边界的事件驱动工业质量调查 Agent。核心答案是：检测系统持续产生事实，普通程序聚合成 Quality Case，受控单 Agent 围绕冻结 Snapshot 调用只读工具形成 Evidence/Proposal，人工批准后才触发 QMS，验证结果再沉淀为可信组织知识。
 

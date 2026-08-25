@@ -93,6 +93,7 @@ class DeepSeekInvestigationLLM:
             "action": "one allowed tool name, submit_investigation_analysis, or stop reason label",
             "arguments": "object; required for TOOL_CALL, otherwise {}",
             "summary": "short, factual Chinese or English audit summary without hidden reasoning",
+            "draft": "optional object with hypothesis and proposal fields; never treated as final without validation",
         }
         system = (
             "You are the bounded decision module of an industrial quality investigation Agent. "
@@ -136,6 +137,7 @@ class DeepSeekInvestigationLLM:
         action = raw.get("action")
         arguments = raw.get("arguments", {})
         summary = raw.get("summary", "")
+        draft = raw.get("draft")
         if kind not in {"TOOL_CALL", "FINAL", "STOP"}:
             raise DeepSeekProviderError("DeepSeek decision has an unsupported kind")
         if not isinstance(action, str) or not action.strip():
@@ -144,6 +146,8 @@ class DeepSeekInvestigationLLM:
             raise DeepSeekProviderError("DeepSeek decision arguments must be an object")
         if not isinstance(summary, str) or not summary.strip():
             raise DeepSeekProviderError("DeepSeek decision summary is missing")
+        if draft is not None and not isinstance(draft, dict):
+            raise DeepSeekProviderError("DeepSeek decision draft must be an object")
         if kind == "TOOL_CALL" and action not in request.available_tools:
             raise DeepSeekProviderError("DeepSeek requested a tool outside the allowlist")
         if kind == "FINAL":
@@ -154,4 +158,5 @@ class DeepSeekInvestigationLLM:
             action=action,
             arguments=arguments,
             summary=summary[:2_000],
+            draft=draft,
         )
